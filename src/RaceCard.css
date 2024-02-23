@@ -1,0 +1,29 @@
+.race-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .race-name {
+    color: #d40e0e; /* F1 red */
+    margin-bottom: 8px;
+  }
+  
+  .circuit-name {
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  
+  .date {
+    font-weight: bold;
+  }
+  
+  .flag {
+    width: 50px; /* or any size you prefer */
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 8px; /* space below the flag */
+  }
