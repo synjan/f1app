@@ -19,16 +19,23 @@ const F1Season2024 = () => {
             setLoading(false);
             return;
           }
-          // Updated raceData mapping to include practice and qualifying sessions
-          const raceData = result.MRData.RaceTable[0].Race.map(race => ({
-            raceName: race.RaceName[0],
-            circuitName: race.Circuit[0].CircuitName[0],
-            date: race.Date[0],
-            firstPractice: race.FirstPractice ? {date: race.FirstPractice[0].Date[0], time: race.FirstPractice[0].Time[0]} : null,
-            secondPractice: race.SecondPractice ? {date: race.SecondPractice[0].Date[0], time: race.SecondPractice[0].Time[0]} : null,
-            thirdPractice: race.ThirdPractice ? {date: race.ThirdPractice[0].Date[0], time: race.ThirdPractice[0].Time[0]} : null,
-            qualifying: race.Qualifying ? {date: race.Qualifying[0].Date[0], time: race.Qualifying[0].Time[0]} : null,
-          }));
+          // Updated raceData mapping to include practice and qualifying sessions and circuit coordinates
+const raceData = result.MRData.RaceTable[0].Race.map(race => ({
+  raceName: race.RaceName[0],
+  circuitName: race.Circuit[0].CircuitName[0],
+  date: race.Date[0],
+  
+  firstPractice: race.FirstPractice ? {date: race.FirstPractice[0].Date[0], time: race.FirstPractice[0].Time[0]} : null,
+  secondPractice: race.SecondPractice ? {date: race.SecondPractice[0].Date[0], time: race.SecondPractice[0].Time[0]} : null,
+  thirdPractice: race.ThirdPractice ? {date: race.ThirdPractice[0].Date[0], time: race.ThirdPractice[0].Time[0]} : null,
+  qualifying: race.Qualifying ? {date: race.Qualifying[0].Date[0], time: race.Qualifying[0].Time[0]} : null,
+  
+  coordinates: {
+    lat: race.Circuit[0].Location[0].$.lat,
+    long: race.Circuit[0].Location[0].$.long
+  }
+}));
+
           setRaces(raceData);
           setLoading(false);
         });
@@ -53,16 +60,16 @@ const F1Season2024 = () => {
     <div className="races-container">
       {races.map((race, index) => (
         <RaceCard
-          key={index}
-          raceName={race.raceName}
-          circuitName={race.circuitName}
-          date={race.date}
-          // Passing the new practice and qualifying session details to the RaceCard
-          firstPractice={race.firstPractice}
-          secondPractice={race.secondPractice}
-          thirdPractice={race.thirdPractice}
-          qualifying={race.qualifying}
-        />
+        key={index}
+        raceName={race.raceName}
+        circuitName={race.circuitName}
+        date={race.date}
+        firstPractice={race.firstPractice}
+        secondPractice={race.secondPractice}
+        thirdPractice={race.thirdPractice}
+        qualifying={race.qualifying}
+        coordinates={race.coordinates} 
+      />
       ))}
     </div>
   );

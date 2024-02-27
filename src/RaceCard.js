@@ -1,11 +1,23 @@
 import React from 'react';
 import './RaceCard.css'; // Ensure your CSS is updated to style these new elements if needed
 
+// Existing formatSession function
 const formatSession = (session) => {
   return session ? `${session.date} ${session.time}` : 'Not scheduled';
 };
 
-const RaceCard = ({ raceName, circuitName, date, firstPractice, secondPractice, thirdPractice, qualifying }) => {
+// Function to format the display of coordinates
+
+const RaceCard = ({
+  raceName, 
+  circuitName, 
+  date, 
+  firstPractice, 
+  secondPractice, 
+  thirdPractice, 
+  qualifying, 
+  coordinates 
+}) => {
   return (
     <div className="race-card">
       <h3 className="race-name">{raceName}</h3>
@@ -16,7 +28,9 @@ const RaceCard = ({ raceName, circuitName, date, firstPractice, secondPractice, 
       <p className="session second-practice">Second Practice: {formatSession(secondPractice)}</p>
       <p className="session third-practice">Third Practice: {formatSession(thirdPractice)}</p>
       <p className="session qualifying">Qualifying: {formatSession(qualifying)}</p>
-    </div>
+      {/* Displaying coordinates */}
+      <p>Coordinates: Lat {coordinates.lat}, Long {coordinates.long}</p>
+      </div>
   );
 };
 
