@@ -1,22 +1,40 @@
 .race-card {
   background-size: cover;
-  color: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}  
-  .race-name {
-    color: #d40e0e; /* F1 red */
-    margin-bottom: 8px;
-  }
-  
-  .circuit-name {
-    font-style: italic;
-    margin-bottom: 4px;
-  }
-  
-  .date {
-    font-weight: bold;
-  }
-  
-  
+  position: relative; /* For positioning the overlay */
+  color: white; /* Set text color for better visibility */
+}
+
+.race-card-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  border-radius: 10px; /* Match parent's border radius */
+}
+
+.race-card-content {
+  position: relative;
+  z-index: 2; /* Ensure the content is above the overlay */
+}
+
+.race-name {
+  color: #d40e0e; /* F1 red */
+  margin-bottom: 8px;
+  font-size: 1.5em; /* Larger font size for better visibility */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
+}
+
+.circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
+}
+
+.date {
+  font-weight: bold;
+}
+
+/* Add more styles as needed */
