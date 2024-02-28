@@ -23,6 +23,8 @@ const F1Season2024 = () => {
 const raceData = result.MRData.RaceTable[0].Race.map(race => ({
   raceName: race.RaceName[0],
   circuitName: race.Circuit[0].CircuitName[0],
+  locality: race.Circuit[0].Location[0].Locality[0],
+  country: race.Circuit[0].Location[0].Country[0],
   date: race.Date[0],
   time: race.Time ? race.Time[0] : null,
 
@@ -65,6 +67,8 @@ const raceData = result.MRData.RaceTable[0].Race.map(race => ({
         key={index}
         raceName={race.raceName}
         circuitName={race.circuitName}
+        locality={race.locality}
+        country={race.country}
         date={race.date}
         time={race.time}
         firstPractice={race.firstPractice}
