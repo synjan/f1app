@@ -81,10 +81,12 @@ const RaceCard = ({
         <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
         <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
         {isValidCountdown(raceCountdown) && <p className="race-countdown">Race Countdown: {raceCountdown}</p>}
+        <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
+        
         <p>{displaySessionInfo(firstPractice, "First Practice")}</p>
         <p>{displaySessionInfo(secondPractice, "Second Practice")}</p>
         <p>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
-        <p>{displaySessionInfo(qualifying, "Qualifying")}</p>
+        
         {/* <p>Coordinates: Lat {coordinates.lat}, Long {coordinates.long}</p> */}
       </div>
     </div>

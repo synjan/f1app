@@ -29,7 +29,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
 }
 
-.circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown {
+.circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown, .quali {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
 }
 
@@ -37,4 +37,11 @@
   font-weight: bold;
 }
 
-/* Add more styles as needed */
+
+
+.quali {
+  padding-bottom: 1em;
+
+}
+
+
