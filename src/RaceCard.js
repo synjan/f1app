@@ -11,7 +11,8 @@ const formatSession = (session) => {
 const RaceCard = ({
   raceName, 
   circuitName, 
-  date, 
+  date,
+  time, 
   firstPractice, 
   secondPractice, 
   thirdPractice, 
@@ -23,6 +24,7 @@ const RaceCard = ({
       <h3 className="race-name">{raceName}</h3>
       <p className="circuit-name">{circuitName}</p>
       <p className="date">Race Date: {date}</p>
+      <p className="time">Race Time: {time}</p>
       {/* Displaying practice and qualifying sessions */}
       <p className="session first-practice">First Practice: {formatSession(firstPractice)}</p>
       <p className="session second-practice">Second Practice: {formatSession(secondPractice)}</p>

@@ -24,6 +24,8 @@ const raceData = result.MRData.RaceTable[0].Race.map(race => ({
   raceName: race.RaceName[0],
   circuitName: race.Circuit[0].CircuitName[0],
   date: race.Date[0],
+  time: race.Time ? race.Time[0] : null,
+
   
   firstPractice: race.FirstPractice ? {date: race.FirstPractice[0].Date[0], time: race.FirstPractice[0].Time[0]} : null,
   secondPractice: race.SecondPractice ? {date: race.SecondPractice[0].Date[0], time: race.SecondPractice[0].Time[0]} : null,
@@ -64,6 +66,7 @@ const raceData = result.MRData.RaceTable[0].Race.map(race => ({
         raceName={race.raceName}
         circuitName={race.circuitName}
         date={race.date}
+        time={race.time}
         firstPractice={race.firstPractice}
         secondPractice={race.secondPractice}
         thirdPractice={race.thirdPractice}
