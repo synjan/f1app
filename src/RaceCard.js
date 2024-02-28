@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './RaceCard.css';
 
+// Simplifies countdown display
+const simplifyCountdown = (days, hours, minutes) => {
+  const parts = [];
+  if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
+  if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
+  if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+  return parts.join(' and ');
+};
+
 // Calculates countdown to a session
 const calculateCountdown = (sessionDateTime) => {
   const now = new Date();
@@ -20,15 +29,11 @@ const calculateCountdown = (sessionDateTime) => {
   minutes %= 60;
   seconds %= 60;
 
-  return `${days}d ${hours.toString().padStart(2, '0')}h:${minutes.toString().padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s`;
+  // Updated to use the simplified countdown
+  return simplifyCountdown(days, hours, minutes);
 };
 
-// Checks for a valid countdown format
-const isValidCountdown = (countdown) => {
-  return !countdown.includes("NaN");
-};
-
-// Formats session times
+// Formats session times considering user's time zone and simplifying language
 const formatSession = (session, timeZone = 'UTC') => {
   if (!session || !session.date || !session.time) return 'Not scheduled';
   const sessionDateTime = new Date(`${session.date}T${session.time}`);
@@ -63,11 +68,11 @@ const RaceCard = ({
   const mapImageUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${coordinates.long},${coordinates.lat},14/500x300@2x?access_token=pk.eyJ1Ijoic3VwZXJqYW4iLCJhIjoiY2x0NW55eHF1MDJndDJqcGR4eGM0b3l2dSJ9.5Q_clHAuM3xLPITsUQ1HUg`;
 
   const displaySessionInfo = (session, sessionName) => {
-    if (!session || !session.date || !session.time) return `${sessionName}: Not scheduled`;
+    if (!session || !session.date || !session.time) return `${sessionName} is not scheduled.`;
     const localTime = formatSession(session, 'UTC');
     const userTime = formatSession(session, userTimeZone);
     const countdown = calculateCountdown(new Date(`${session.date}T${session.time}`).toLocaleString('en-US', { timeZone: userTimeZone }));
-    return `${sessionName} - Countdown: ${countdown} - Your time: ${userTime} - Local time: ${localTime}`;
+    return `${sessionName} starts in ${countdown}. It starts at ${userTime} your time (${localTime}).`;
   };
 
   return (
@@ -75,19 +80,18 @@ const RaceCard = ({
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
         <h3 className="race-name">{raceName}</h3>
-        <p className="circuit-name">{circuitName}</p>
-        <p className="locality">{locality}, {country}</p>
+        <p className="circuit-name">{circuitName} - {locality}, {country}</p>
+        
         <p className="date">Race Date: {date}</p>
         <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
         <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
-        {isValidCountdown(raceCountdown) && <p className="race-countdown">Race Countdown: {raceCountdown}</p>}
+        {<p className="race-countdown">Race Countdown: {raceCountdown}</p>}
+        
         <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
         
-        <p>{displaySessionInfo(firstPractice, "First Practice")}</p>
-        <p>{displaySessionInfo(secondPractice, "Second Practice")}</p>
-        <p>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
-        
-        {/* <p>Coordinates: Lat {coordinates.lat}, Long {coordinates.long}</p> */}
+        <p className='practice'>{displaySessionInfo(firstPractice, "First Practice")}</p>
+        <p className='practice'>{displaySessionInfo(secondPractice, "Second Practice")}</p>
+        <p className='practice'>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
       </div>
     </div>
   );
