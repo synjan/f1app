@@ -1,45 +1,7 @@
+// RaceCard.js
 import React, { useState, useEffect } from 'react';
 import './RaceCard.css';
-
-// Simplifies countdown display
-const simplifyCountdown = (days, hours, minutes) => {
-  const parts = [];
-  if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
-  if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
-  if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
-  return parts.join(' and ');
-};
-
-// Calculates countdown to a session
-const calculateCountdown = (sessionDateTime) => {
-  const now = new Date();
-  const sessionDate = new Date(sessionDateTime);
-  const timeDifference = sessionDate - now;
-
-  if (timeDifference <= 0) {
-    return 'Already started';
-  }
-
-  let seconds = Math.floor(timeDifference / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-  let days = Math.floor(hours / 24);
-
-  hours %= 24;
-  minutes %= 60;
-  seconds %= 60;
-
-  // Updated to use the simplified countdown
-  return simplifyCountdown(days, hours, minutes);
-};
-
-// Formats session times considering user's time zone and simplifying language
-const formatSession = (session, timeZone = 'UTC') => {
-  if (!session || !session.date || !session.time) return 'Not scheduled';
-  const sessionDateTime = new Date(`${session.date}T${session.time}`);
-  if (isNaN(sessionDateTime.getTime())) return 'Not scheduled';
-  return sessionDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone });
-};
+import { calculateCountdown, formatSession } from './RaceUtils';
 
 const RaceCard = ({
   raceName,
@@ -61,19 +23,27 @@ const RaceCard = ({
     const interval = setInterval(() => {
       setRaceCountdown(calculateCountdown(`${date}T${time}`));
     }, 1000);
-
+  
     return () => clearInterval(interval);
-  }, [date, time]);
-
-  const mapImageUrl = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${coordinates.long},${coordinates.lat},14/500x300@2x?access_token=pk.eyJ1Ijoic3VwZXJqYW4iLCJhIjoiY2x0NW55eHF1MDJndDJqcGR4eGM0b3l2dSJ9.5Q_clHAuM3xLPITsUQ1HUg`;
-
+  }, [date, time]); // Including 'date' and 'time' in the dependency array
+  
   const displaySessionInfo = (session, sessionName) => {
     if (!session || !session.date || !session.time) return `${sessionName} is not scheduled.`;
-    const localTime = formatSession(session, 'UTC');
-    const userTime = formatSession(session, userTimeZone);
-    const countdown = calculateCountdown(new Date(`${session.date}T${session.time}`).toLocaleString('en-US', { timeZone: userTimeZone }));
-    return `${sessionName} starts in ${countdown}. It starts at ${userTime} your time (${localTime}).`;
+    const sessionDateTime = new Date(`${session.date}T${session.time}`);
+    const now = new Date();
+  
+    if (sessionDateTime <= now) {
+      return `${sessionName} has already started or finished.`;
+    } else {
+      const localTime = formatSession(session, 'UTC');
+      const userTime = formatSession(session, userTimeZone);
+      const countdown = calculateCountdown(sessionDateTime.toISOString());
+      return `${sessionName} starts in ${countdown}. It starts at ${userTime} your time (${localTime}).`;
+    }
   };
+  
+  // Ensure the coordinates are correctly validated or handled to avoid errors
+  const mapImageUrl = `https://api.mapbox.com/styles/v1/superjan/clt73t4aa00yi01qua3sbbo1t/static/${coordinates.long},${coordinates.lat},10/500x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
 
   return (
     <div className="race-card" style={{ backgroundImage: `url(${mapImageUrl})` }}>
@@ -85,7 +55,7 @@ const RaceCard = ({
         <p className="date">Race Date: {date}</p>
         <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
         <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
-        {<p className="race-countdown">Race Countdown: {raceCountdown}</p>}
+        <p className="race-countdown">Race Countdown: {raceCountdown}</p>
         
         <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
         
