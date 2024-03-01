@@ -12,7 +12,7 @@ const F1Season2024 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://ergast.com/api/f1/2024');
+        const response = await axios.get('https://ergast.com/api/f1/2024');
         xml2js.parseString(response.data, (err, result) => {
           if (err) {
             setError(err.message);
