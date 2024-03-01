@@ -13,8 +13,8 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
-  border-radius: 10px; /* Match parent's border radius */
+  background-color: rgba(0, 0, 0, 0.4); 
+  border-radius: 10px;
 }
 
 .race-card-content {
@@ -25,18 +25,48 @@
 .race-name {
   color: #d40e0e; /* F1 red */
   margin-bottom: 8px;
-  font-size: 1.5em; /* Larger font size for better visibility */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
+  font-size: 3em; /* Larger font size for better visibility */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
 }
 
 .circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown, .quali {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
 }
 
+
+
+.circuit-name {
+  font-size: 1.6em; /* Larger font size for better visibility */
+  margin-bottom: 8px;
+
+}
+
+.locality, .country {
+  font-weight: lighter;
+  margin-bottom: 8px;
+}
+
+
+.user-time {
+  font-size: 1.5em; /* Larger font size for better visibility */
+  font-weight: bold;
+}
+
+.time {
+  
+  font-weight: lighter;
+}
+
+
+
 .date {
   font-weight: bold;
 }
 
+.race-countdown {
+  font-size: 1.5em; /* Larger font size for better visibility */
+  font-weight: bold;
+}
 
 
 .quali {

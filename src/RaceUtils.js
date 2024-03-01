@@ -7,6 +7,11 @@ export const simplifyCountdown = (days, hours, minutes) => {
     return parts.join(', '); // Changed 'and' to ',' for a more standard list format
   };
   
+/**
+ * Calculates the countdown to a session based on the session date and time.
+ * @param {string} sessionDateTime - The date and time of the session.
+ * @returns {string} - The countdown to the session in a simplified format.
+ */
   export const calculateCountdown = (sessionDateTime) => {
     const now = new Date();
     const sessionDate = new Date(sessionDateTime);

@@ -51,11 +51,13 @@ const RaceCard = ({
       <div className="race-card-content">
         <h3 className="race-name">{raceName}</h3>
         <p className="circuit-name">{circuitName} - {locality}, {country}</p>
+        <p className="race-countdown">{raceCountdown}</p>
+        
         
         <p className="date">Race Date: {date}</p>
-        <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
-        <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
-        <p className="race-countdown">Race Countdown: {raceCountdown}</p>
+        <p className="time">Local Time: {formatSession({date, time},)}</p>
+        <p className="user-time">{formatSession({date, time}, userTimeZone)}</p>
+        
         
         <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
         
