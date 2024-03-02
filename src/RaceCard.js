@@ -3,6 +3,32 @@ import React, { useState, useEffect } from 'react';
 import './RaceCard.css';
 import { calculateCountdown, formatSession } from './RaceUtils';
 
+const countryCodes = {
+  "Bahrain": "BH",
+  "Saudi Arabia": "SA",
+  "Australia": "AU",
+  "Japan": "JP",
+  "China": "CN",
+  "USA": "US",
+  "Italy": "IT",
+  "Monaco": "MC",
+  "Canada": "CA",
+  "Spain": "ES",
+  "Austria": "AT",
+  "UK": "GB",
+  "Hungary": "HU",
+  "Belgium": "BE",
+  "Netherlands": "NL",
+  "Azerbaijan": "AZ",
+  "Singapore": "SG",
+  "Mexico": "MX",
+  "Brazil": "BR",
+  "United States": "US",
+  "Qatar": "QA",
+  "UAE": "AE",
+  
+};
+
 const RaceCard = ({
   raceName,
   circuitName,
@@ -18,6 +44,7 @@ const RaceCard = ({
 }) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [raceCountdown, setRaceCountdown] = useState(calculateCountdown(`${date}T${time}`));
+  const countryCode = countryCodes[country];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,7 +76,13 @@ const RaceCard = ({
     <div className="race-card" style={{ backgroundImage: `url(${mapImageUrl})` }}>
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
-        <h3 className="race-name">{raceName}</h3>
+        
+        <h3 className="race-name">{raceName} 
+        <div className="flag-container"> <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
+        </div>
+        
+        </h3>
+        
         <p className="circuit-name">{circuitName} - {locality}, {country}</p>
         <p className="race-countdown">{raceCountdown}</p>
         
@@ -65,6 +98,8 @@ const RaceCard = ({
         <p className='practice'>{displaySessionInfo(secondPractice, "Second Practice")}</p>
         <p className='practice'>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
       </div>
+      
+
     </div>
   );
 };
