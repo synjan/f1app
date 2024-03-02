@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import xml2js from 'xml2js';
-import RaceCard from './RaceCard'; // Make sure this points to your RaceCard component
+import RaceCard from './RaceCard'; // Ensure this points to your RaceCard component
 import './F1Season2024.css'; // Ensure this points to your CSS file
 
 const F1Season2024 = () => {
@@ -14,11 +14,12 @@ const F1Season2024 = () => {
       setLoading(true);
       const cacheKey = 'f1RacesData2024';
       try {
-        const response = await axios.get('https://ergast.com/api/f1/2024');
-        xml2js.parseString(response.data, (err, result) => {
+        const season = '2024';
+        const response = await axios.get(`https://ergast.com/api/f1/${season}`);
+        xml2js.parseString(response.data, async (err, result) => {
           if (err) throw err; // Propagates parsing errors
           
-          const raceData = result.MRData.RaceTable[0].Race.map(race => ({
+          let raceData = result.MRData.RaceTable[0].Race.map(race => ({
             raceName: race.RaceName[0],
             circuitName: race.Circuit[0].CircuitName[0],
             locality: race.Circuit[0].Location[0].Locality[0],
@@ -32,8 +33,30 @@ const F1Season2024 = () => {
             coordinates: {
               lat: race.Circuit[0].Location[0].$.lat,
               long: race.Circuit[0].Location[0].$.long
-            }
+            },
+            finished: false // Default to not finished
           }));
+
+          // Now, check if each race has finished by looking for results
+for (let i = 0; i < raceData.length; i++) {
+  const round = i + 1; // Assuming round numbers are sequential and start at 1
+  try {
+    const resultsResponse = await axios.get(`https://ergast.com/api/f1/${season}/${round}/results.json`);
+    const results = resultsResponse.data.MRData.RaceTable.Races[0].Results;
+    if (results.length > 0) {
+      raceData[i].finished = true; // Update if results are present
+
+      // Extract top 3 drivers' last names and their times (assuming they exist)
+      raceData[i].top3 = results.slice(0, 3).map(driverResult => ({
+        driver: driverResult.Driver.familyName,
+        time: driverResult.Time ? driverResult.Time.time : 'N/A', // Handling cases where Time might not exist
+      }));
+    }
+  } catch (resultsError) {
+    console.error(`Error fetching results for round ${round}:`, resultsError);
+    // Not updating the finished status or top3 in case of an error
+  }
+}
 
           localStorage.setItem(cacheKey, JSON.stringify(raceData)); // Update cache with new data
           setRaces(raceData);
@@ -69,21 +92,24 @@ const F1Season2024 = () => {
   return (
     <div className="races-container">
       {races.map((race, index) => (
-        <RaceCard
-          key={index}
-          raceName={race.raceName}
-          circuitName={race.circuitName}
-          locality={race.locality}
-          country={race.country}
-          date={race.date}
-          time={race.time}
-          firstPractice={race.firstPractice}
-          secondPractice={race.secondPractice}
-          thirdPractice={race.thirdPractice}
-          qualifying={race.qualifying}
-          coordinates={race.coordinates}
-        />
-      ))}
+  <RaceCard
+    key={index}
+    raceName={race.raceName}
+    circuitName={race.circuitName}
+    locality={race.locality}
+    country={race.country}
+    date={race.date}
+    time={race.time}
+    firstPractice={race.firstPractice}
+    secondPractice={race.secondPractice}
+    thirdPractice={race.thirdPractice}
+    qualifying={race.qualifying}
+    coordinates={race.coordinates}
+    finished={race.finished}
+    top3={race.top3} // Add this line to pass top 3 drivers to the RaceCard
+  />
+))}
+
     </div>
   );
 };

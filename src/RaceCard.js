@@ -40,7 +40,9 @@ const RaceCard = ({
   secondPractice,
   thirdPractice,
   qualifying,
-  coordinates
+  coordinates,
+  finished, // Confirm this prop is being passed and used correctly
+  top3 // Ensure this line is added to destructure the top3 prop
 }) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [raceCountdown, setRaceCountdown] = useState(calculateCountdown(`${date}T${time}`));
@@ -52,8 +54,8 @@ const RaceCard = ({
     }, 1000);
   
     return () => clearInterval(interval);
-  }, [date, time]); // Including 'date' and 'time' in the dependency array
-  
+  }, [date, time]);
+
   const displaySessionInfo = (session, sessionName) => {
     if (!session || !session.date || !session.time) return `${sessionName} is not scheduled.`;
     const sessionDateTime = new Date(`${session.date}T${session.time}`);
@@ -68,8 +70,7 @@ const RaceCard = ({
       return `${sessionName} starts in ${countdown}. It starts at ${userTime} your time (${localTime}).`;
     }
   };
-  
-  // Ensure the coordinates are correctly validated or handled to avoid errors
+
   const mapImageUrl = `https://api.mapbox.com/styles/v1/superjan/clt73t4aa00yi01qua3sbbo1t/static/${coordinates.long},${coordinates.lat},10/500x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
 
   return (
@@ -77,29 +78,41 @@ const RaceCard = ({
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
         
-        <h3 className="race-name">{raceName} 
-        <div className="flag-container"> <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
+        <h3 className="race-name">{raceName}
+        <div className="flag-container">
+          <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
         </div>
-        
         </h3>
         
         <p className="circuit-name">{circuitName} - {locality}, {country}</p>
-        <p className="race-countdown">{raceCountdown}</p>
-        
+        <p className="race-countdown">{finished ? "Race Finished" : raceCountdown}</p>
         
         <p className="date">Race Date: {date}</p>
-        <p className="time">Local Time: {formatSession({date, time},)}</p>
-        <p className="user-time">{formatSession({date, time}, userTimeZone)}</p>
+        <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
+        <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
         
-        
-        <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
-        
-        <p className='practice'>{displaySessionInfo(firstPractice, "First Practice")}</p>
-        <p className='practice'>{displaySessionInfo(secondPractice, "Second Practice")}</p>
-        <p className='practice'>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
+        {
+  finished && top3 ? (
+    <>
+      <p className="finished-message">This race has concluded.</p>
+      <div className="top-drivers">
+        <h4>Top 3 Drivers:</h4>
+        <ul>
+          {top3.map((driver, index) => (
+            <li key={index}>{driver.position}. {driver.driver} - {driver.time}</li>
+          ))}
+        </ul>
       </div>
-      
-
+    </>
+  ) : (
+          <>
+            <p className="quali">{displaySessionInfo(qualifying, "Qualifying")}</p>
+            <p className='practice'>{displaySessionInfo(firstPractice, "First Practice")}</p>
+            <p className='practice'>{displaySessionInfo(secondPractice, "Second Practice")}</p>
+            <p className='practice'>{displaySessionInfo(thirdPractice, "Third Practice")}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 };
