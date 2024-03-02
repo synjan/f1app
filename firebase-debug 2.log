@@ -1,0 +1,15 @@
+[debug] [2024-03-02T22:31:55.896Z] ----------------------------------------------------------------------
+[debug] [2024-03-02T22:31:55.898Z] Command:       /opt/homebrew/Cellar/node/21.5.0/bin/node /opt/homebrew/bin/firebase deploy
+[debug] [2024-03-02T22:31:55.898Z] CLI Version:   13.4.0
+[debug] [2024-03-02T22:31:55.898Z] Platform:      darwin
+[debug] [2024-03-02T22:31:55.898Z] Node Version:  v21.5.0
+[debug] [2024-03-02T22:31:55.898Z] Time:          Sat Mar 02 2024 23:31:55 GMT+0100 (Central European Standard Time)
+[debug] [2024-03-02T22:31:55.898Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-03-02T22:31:55.899Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-03-02T22:31:55.947Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-03-02T22:31:55.947Z] > authorizing via signed-in user (janarne84@gmail.com)
+[debug] [2024-03-02T22:31:55.947Z] [iam] checking project f1eventcalendar for permissions ["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2024-03-02T22:31:55.948Z] > refreshing access token with scopes: []
+[debug] [2024-03-02T22:31:55.948Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-03-02T22:31:55.948Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]

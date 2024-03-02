@@ -81,6 +81,21 @@ for (let i = 0; i < raceData.length; i++) {
     fetchData();
   }, []);
 
+  // Find the closest future race
+  const getClosestFutureRaceIndex = () => {
+    const now = new Date();
+    return races
+      .map((race, index) => ({
+        index,
+        date: new Date(race.date),
+      }))
+      .filter(({ date }) => date > now)
+      .sort((a, b) => a.date - b.date)
+      .map(({ index }) => index)[0]; // Get the index of the first upcoming race
+  };
+
+  const closestFutureRaceIndex = getClosestFutureRaceIndex();
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -92,24 +107,24 @@ for (let i = 0; i < raceData.length; i++) {
   return (
     <div className="races-container">
       {races.map((race, index) => (
-  <RaceCard
-    key={index}
-    raceName={race.raceName}
-    circuitName={race.circuitName}
-    locality={race.locality}
-    country={race.country}
-    date={race.date}
-    time={race.time}
-    firstPractice={race.firstPractice}
-    secondPractice={race.secondPractice}
-    thirdPractice={race.thirdPractice}
-    qualifying={race.qualifying}
-    coordinates={race.coordinates}
-    finished={race.finished}
-    top3={race.top3} // Add this line to pass top 3 drivers to the RaceCard
-  />
-))}
-
+        <RaceCard
+          key={index}
+          raceName={race.raceName}
+          circuitName={race.circuitName}
+          locality={race.locality}
+          country={race.country}
+          date={race.date}
+          time={race.time}
+          firstPractice={race.firstPractice}
+          secondPractice={race.secondPractice}
+          thirdPractice={race.thirdPractice}
+          qualifying={race.qualifying}
+          coordinates={race.coordinates}
+          finished={race.finished}
+          top3={race.top3}
+          isClosestFutureRace={index === closestFutureRaceIndex} // Pass the new prop here
+        />
+      ))}
     </div>
   );
 };

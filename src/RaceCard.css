@@ -78,3 +78,17 @@
   font-weight: lighter;
  
 }
+.race-card.closest-future-race {
+  border: 2px solid red; /* Adjust the border as needed */
+  box-shadow: 0 0 8px red, 0 0 15px red, 0 0 20px red; /* Creates a glowing effect */
+  animation: glow-animation 2s infinite alternate;
+}
+
+@keyframes glow-animation {
+  from {
+    box-shadow: 0 0 8px red, 0 0 15px red, 0 0 20px red;
+  }
+  to {
+    box-shadow: 0 0 12px red, 0 0 25px red, 0 0 30px red;
+  }
+}

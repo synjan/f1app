@@ -41,12 +41,14 @@ const RaceCard = ({
   thirdPractice,
   qualifying,
   coordinates,
-  finished, // Confirm this prop is being passed and used correctly
-  top3 // Ensure this line is added to destructure the top3 prop
+  finished,
+  top3,
+  isClosestFutureRace, // Assuming this prop is passed to indicate the closest future race
 }) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [raceCountdown, setRaceCountdown] = useState(calculateCountdown(`${date}T${time}`));
   const countryCode = countryCodes[country];
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,9 +74,10 @@ const RaceCard = ({
   };
 
   const mapImageUrl = `https://api.mapbox.com/styles/v1/superjan/clt73t4aa00yi01qua3sbbo1t/static/${coordinates.long},${coordinates.lat},10/500x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
+  const cardClasses = `race-card ${isClosestFutureRace ? 'closest-future-race' : ''}`;
 
   return (
-    <div className="race-card" style={{ backgroundImage: `url(${mapImageUrl})` }}>
+    <div className={cardClasses} style={{ backgroundImage: `url(${mapImageUrl})` }}>
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
         
