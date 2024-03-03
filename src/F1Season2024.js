@@ -17,8 +17,12 @@ const F1Season2024 = () => {
         const season = '2024';
         const response = await axios.get(`https://ergast.com/api/f1/${season}`);
         xml2js.parseString(response.data, async (err, result) => {
-          if (err) throw err; // Propagates parsing errors
-          
+          if (err) {
+            setError('Failed to parse XML data');
+            setLoading(false);
+            return;
+          }
+
           let raceData = result.MRData.RaceTable[0].Race.map(race => ({
             raceName: race.RaceName[0],
             circuitName: race.Circuit[0].CircuitName[0],
@@ -34,46 +38,49 @@ const F1Season2024 = () => {
               lat: race.Circuit[0].Location[0].$.lat,
               long: race.Circuit[0].Location[0].$.long
             },
-            finished: false // Default to not finished
+            finished: false, // Default to not finished
+            top3: [] // Initialize top3 as empty
           }));
 
-          // Now, check if each race has finished by looking for results
-for (let i = 0; i < raceData.length; i++) {
-  const round = i + 1; // Assuming round numbers are sequential and start at 1
-  try {
-    const resultsResponse = await axios.get(`https://ergast.com/api/f1/${season}/${round}/results.json`);
-    const results = resultsResponse.data.MRData.RaceTable.Races[0].Results;
-    if (results.length > 0) {
-      raceData[i].finished = true; // Update if results are present
+          // Prepare promises for fetching race results in parallel
+          const resultsPromises = raceData.map((_, index) => {
+            const round = index + 1;
+            return axios.get(`https://ergast.com/api/f1/${season}/${round}/results.json`)
+              .then(resultsResponse => ({
+                index,
+                results: resultsResponse.data.MRData.RaceTable.Races[0].Results,
+              }))
+              .catch(() => ({
+                index,
+                error: true,
+              }));
+          });
 
-      // Extract top 3 drivers' last names and their times (assuming they exist)
-      raceData[i].top3 = results.slice(0, 3).map(driverResult => ({
-        driver: driverResult.Driver.familyName,
-        time: driverResult.Time ? driverResult.Time.time : 'N/A', // Handling cases where Time might not exist
-      }));
-    }
-  } catch (resultsError) {
-    console.error(`Error fetching results for round ${round}:`, resultsError);
-    // Not updating the finished status or top3 in case of an error
-  }
-}
+          // Wait for all promises to settle
+          const results = await Promise.allSettled(resultsPromises);
 
-          localStorage.setItem(cacheKey, JSON.stringify(raceData)); // Update cache with new data
+          // Process the results
+          results.forEach(result => {
+            if (result.status === 'fulfilled' && !result.value.error) {
+              const { index, results } = result.value;
+              const hasResults = results && results.length > 0;
+              raceData[index].finished = hasResults;
+              if (hasResults) {
+                raceData[index].top3 = results.slice(0, 3).map(driverResult => ({
+                  driver: driverResult.Driver.familyName,
+                  time: driverResult.Time ? driverResult.Time.time : 'N/A',
+                }));
+              }
+            }
+          });
+
+          localStorage.setItem(cacheKey, JSON.stringify(raceData));
           setRaces(raceData);
-          setLoading(false);
         });
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response && error.response.status === 503) {
-          const cachedData = localStorage.getItem(cacheKey);
-          if (cachedData) {
-            setRaces(JSON.parse(cachedData));
-            setError('Data loaded from cache due to server issues.');
-          } else {
-            setError('Service temporarily unavailable and no cached data found.');
-          }
-        } else {
-          setError(error.message || 'An unexpected error occurred');
-        }
+        console.error("Fetch error:", error);
+        setError(error.message || 'An unexpected error occurred');
+      } finally {
         setLoading(false);
       }
     };
@@ -81,7 +88,6 @@ for (let i = 0; i < raceData.length; i++) {
     fetchData();
   }, []);
 
-  // Find the closest future race
   const getClosestFutureRaceIndex = () => {
     const now = new Date();
     return races
@@ -91,7 +97,7 @@ for (let i = 0; i < raceData.length; i++) {
       }))
       .filter(({ date }) => date > now)
       .sort((a, b) => a.date - b.date)
-      .map(({ index }) => index)[0]; // Get the index of the first upcoming race
+      .map(({ index }) => index)[0];
   };
 
   const closestFutureRaceIndex = getClosestFutureRaceIndex();
@@ -122,7 +128,7 @@ for (let i = 0; i < raceData.length; i++) {
           coordinates={race.coordinates}
           finished={race.finished}
           top3={race.top3}
-          isClosestFutureRace={index === closestFutureRaceIndex} // Pass the new prop here
+          isClosestFutureRace={index === closestFutureRaceIndex}
         />
       ))}
     </div>
