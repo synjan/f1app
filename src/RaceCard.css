@@ -31,6 +31,7 @@
 
 .circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown, .quali {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
+  
 }
 
 
