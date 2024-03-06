@@ -8,28 +8,23 @@ function App() {
   const [showError, setShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Randomization function to select a theme
-  const getRandomTheme = () => {
-    const themes = ["technological innovations", "historical achievements", "driver profiles", "fascinating comparisons", "team rivalries", ];
-    return themes[Math.floor(Math.random() * themes.length)];
-  };
+  // Enhanced randomization function to select themes, fact types, and additional keywords
+  const getRandomElements = () => {
+    const themes = ["technological innovations", "historical milestones", "unforgettable moments", "pioneering strategies", "engineering marvels"];
+    const factTypes = ["intriguing records", "groundbreaking technologies", "iconic races", "legendary drivers", "pivotal moments"];
+    const keywords = ["aerodynamics", "safety advancements", "fuel efficiency", "circuit designs", "team dynamics"];
 
-  const getRandomFactType = () => {
-    const factTypes = [
-      "intriguing records",
-      "groundbreaking technologies",
-      "legendary races",
-      "iconic circuits",
-      "memorable season finales"
-    ];
-    return factTypes[Math.floor(Math.random() * factTypes.length)];
+    // Randomly select one element from each array
+    const theme = themes[Math.floor(Math.random() * themes.length)];
+    const factType = factTypes[Math.floor(Math.random() * factTypes.length)];
+    const keyword = keywords[Math.floor(Math.random() * keywords.length)];
+
+    return { theme, factType, keyword };
   };
-  
 
   const fetchF1Fact = async () => {
     setIsLoading(true);
-    const randomTheme = getRandomTheme(); // Get a random theme
-    const randomFactType = getRandomFactType(); // Get a random fact type
+    const { theme, factType, keyword } = getRandomElements(); // Get random elements for the prompt
     
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -43,18 +38,18 @@ function App() {
           messages: [
             {
               role: "system",
-              content: `Craft a unique and compelling fact about Formula 1 racing for an app audience, focusing on ${randomTheme} and highlighting ${randomFactType}. Use metric units (meters, kilometers, kilograms, etc.) to align with international standards and enhance accessibility. Ensure the language is engaging and straightforward, suitable for both new fans and seasoned enthusiasts. Each response should provide a complete, standalone fact, avoiding formal introductions and technical jargon unless necessary for clarity. Emphasize creating a diverse range of facts to enrich users' experience, fostering a deeper appreciation of the sport's complexity and allure.`
+              content: `Generate a concise, engaging fact about Formula 1 focusing on ${theme}, particularly on ${factType} related to ${keyword}. The fact should be accessible to both new fans and enthusiasts, avoiding overly technical jargon unless necessary for clarity.`
             },
             {
               role: "user",
-              content: "Generate a unique fact about Formula 1 racing, focusing on one aspect"
+              content: "Provide a unique F1 fact."
             }
           ],
-          temperature: 1,
-          max_tokens: 100,
+          temperature: 0.7,
+          max_tokens: 60, // Reduced for conciseness
           top_p: 1.0,
-          frequency_penalty: 1.0,
-          presence_penalty: 0.0
+          frequency_penalty: 0.5, // Adjusted to reduce repetition
+          presence_penalty: 0.5 // Adjusted to encourage mentioning new concepts
         }),
       });
       if (!response.ok) {
@@ -73,6 +68,7 @@ function App() {
       setIsLoading(false);
     }
   };
+  
   
 
   return (
