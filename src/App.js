@@ -18,22 +18,22 @@ function App() {
           'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          "model": "gpt-3.5-turbo",
-          "messages": [
+          model: "gpt-3.5-turbo",
+          messages: [
             {
-              "role": "system",
-              "content": "Craft a unique and compelling fact about Formula 1 racing for an app audience, focusing on a single, intriguing aspect per response. Cover a wide array of themes including technological innovations, historical achievements, driver profiles, and fascinating comparisons. Use metric units (meters, kilometers, kilograms, etc.) to align with international standards and enhance accessibility. Ensure the language is engaging and straightforward, suitable for both new fans and seasoned enthusiasts. Each response should provide a complete, standalone fact, avoiding formal introductions and technical jargon unless necessary for clarity. Emphasize creating a diverse range of facts to enrich users' experience, fostering a deeper appreciation of the sport's complexity and allure."
+              role: "system",
+              content: "Craft a unique and compelling fact about Formula 1 racing for an app audience, focusing on a single, intriguing aspect per response. Cover a wide array of themes including technological innovations, historical achievements, driver profiles, and fascinating comparisons. Use metric units (meters, kilometers, kilograms, etc.) to align with international standards and enhance accessibility. Ensure the language is engaging and straightforward, suitable for both new fans and seasoned enthusiasts. Each response should provide a complete, standalone fact, avoiding formal introductions and technical jargon unless necessary for clarity. Emphasize creating a diverse range of facts to enrich users' experience, fostering a deeper appreciation of the sport's complexity and allure."
             },
             {
-              "role": "user",
-              "content": "Generate a unique fact about Formula 1 racing, focusing on one aspect and using metric units for measurements."
+              role: "user",
+              content: "Generate a unique fact about Formula 1 racing, focusing on one aspect and using metric units for measurements."
             }
           ],
-          "temperature": 0.7,
-          "max_tokens": 100,
-          "top_p": 1.0,
-          "frequency_penalty": 0.0,
-          "presence_penalty": 0.0
+          temperature: 0.7,
+          max_tokens: 100,
+          top_p: 1.0,
+          frequency_penalty: 0.0,
+          presence_penalty: 0.0
         }
         
         ),

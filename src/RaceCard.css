@@ -31,6 +31,7 @@
 
 .circuit-name, .locality, .country, .date, .time, .user-time, .race-countdown, .quali {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Text shadow for legibility */
+  background-color: #d40e0e;
   
 }
 
@@ -73,17 +74,18 @@
 .quali {
   padding-bottom: 1em;
 
-  
+
 }
 
 .practice {
   font-weight: lighter;
+  background-color: #d40e0e;
  
 }
 .race-card.closest-future-race {
-  border: 2px solid red; /* Adjust the border as needed */
+  border: 3px solid red; /* Adjust the border as needed */
   box-shadow: 0 0 8px red, 0 0 15px red, 0 0 20px red; /* Creates a glowing effect */
-  animation: glow-animation 2s infinite alternate;
+  animation: glow-animation 900ms infinite alternate;
 }
 
 @keyframes glow-animation {
@@ -93,4 +95,17 @@
   to {
     box-shadow: 0 0 12px red, 0 0 25px red, 0 0 30px red;
   }
+}
+
+.race-summary {
+  background-color: #d40e0e;
+
+}
+
+.finished-message {
+  background-color: #d40e0e;
+}
+
+.top-drivers {
+  background-color: #d40e0e;
 }
