@@ -64,24 +64,25 @@ const RaceCard = ({
     <div className={cardClasses} style={{ backgroundImage: `url(${mapImageUrl})` }} onClick={toggleCollapse}>
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
-        <h3 className="race-name">{raceName}
-          <div className="flag-container">
-            <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
-          </div>
-        </h3>
-        {isCollapsed ? (
-          // Collapsed view
-          <p className="race-summary">
-            {finished ? 
-              `Winner: ${top3 ? top3[0].driver : 'N/A'}` : // Display winner's name if race is finished
-              `Starts in: ${raceCountdown}` // Display countdown if race is upcoming
-            }
-          </p>
+  <h3 className="race-name">{raceName}
+    <p className="raceCountdown">{finished ? "Race Finished" : raceCountdown}</p>
+    <div className="flag-container">
+      <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
+    </div>
+  </h3>
+  {isCollapsed ? (
+    // Collapsed view
+    <p className="race-summary">
+      {finished ? 
+        `Winner: ${top3 ? top3[0].driver : 'N/A'}` : // Display winner's name if race is finished
+        `` 
+      }
+    </p>
         ) : (
           // Expanded view
           <>
             <p className="circuit-name">{circuitName} - {locality}, {country}</p>
-            <p className="race-countdown">{finished ? "Race Finished" : raceCountdown}</p>
+            {/* <p className="race-countdown">{finished ? "Race Finished" : raceCountdown}</p> */}
             <p className="date">Race Date: {date}</p>
             <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
             <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>

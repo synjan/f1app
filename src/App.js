@@ -6,10 +6,31 @@ function App() {
   const [showFact, setShowFact] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showError, setShowError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Updated loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Randomization function to select a theme
+  const getRandomTheme = () => {
+    const themes = ["technological innovations", "historical achievements", "driver profiles", "fascinating comparisons", "team rivalries", ];
+    return themes[Math.floor(Math.random() * themes.length)];
+  };
+
+  const getRandomFactType = () => {
+    const factTypes = [
+      "intriguing records",
+      "groundbreaking technologies",
+      "legendary races",
+      "iconic circuits",
+      "memorable season finales"
+    ];
+    return factTypes[Math.floor(Math.random() * factTypes.length)];
+  };
+  
 
   const fetchF1Fact = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
+    const randomTheme = getRandomTheme(); // Get a random theme
+    const randomFactType = getRandomFactType(); // Get a random fact type
+    
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -22,24 +43,19 @@ function App() {
           messages: [
             {
               role: "system",
-              content: "Craft a unique and compelling fact about Formula 1 racing for an app audience, focusing on a single, intriguing aspect per response. Cover a wide array of themes including technological innovations, historical achievements, driver profiles, and fascinating comparisons. Use metric units (meters, kilometers, kilograms, etc.) to align with international standards and enhance accessibility. Ensure the language is engaging and straightforward, suitable for both new fans and seasoned enthusiasts. Each response should provide a complete, standalone fact, avoiding formal introductions and technical jargon unless necessary for clarity. Emphasize creating a diverse range of facts to enrich users' experience, fostering a deeper appreciation of the sport's complexity and allure."
+              content: `Craft a unique and compelling fact about Formula 1 racing for an app audience, focusing on ${randomTheme} and highlighting ${randomFactType}. Use metric units (meters, kilometers, kilograms, etc.) to align with international standards and enhance accessibility. Ensure the language is engaging and straightforward, suitable for both new fans and seasoned enthusiasts. Each response should provide a complete, standalone fact, avoiding formal introductions and technical jargon unless necessary for clarity. Emphasize creating a diverse range of facts to enrich users' experience, fostering a deeper appreciation of the sport's complexity and allure.`
             },
             {
               role: "user",
-              content: "Generate a unique fact about Formula 1 racing, focusing on one aspect and using metric units for measurements."
+              content: "Generate a unique fact about Formula 1 racing, focusing on one aspect"
             }
           ],
-          temperature: 0.7,
+          temperature: 1,
           max_tokens: 100,
           top_p: 1.0,
-          frequency_penalty: 0.0,
+          frequency_penalty: 1.0,
           presence_penalty: 0.0
-        }
-        
-        ),
-        
-        
-        
+        }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,16 +70,17 @@ function App() {
       setShowError(true);
       setShowFact(false);
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="App">
       <F1Season2024 />
       <button
         onClick={fetchF1Fact}
-        
+        disabled={isLoading}
         style={{
           position: 'fixed',
           bottom: '20px',
