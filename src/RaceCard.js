@@ -27,6 +27,32 @@ const countryCodes = {
   "UAE": "AE",
 };
 
+const countryFontClasses = {
+  "Bahrain": "Amiri",
+  "Saudi Arabia": "Amiri",
+  "Qatar": "Amiri",
+  "UAE": "Amiri",
+  "Australia": "Arimo", // Alternative to 'Outback'
+  "Japan": "M_PLUS_Rounded_1c",
+  "China": "Noto_Sans_SC",
+  "USA": "Libre_Franklin",
+  "United States": "Libre_Franklin", // Duplicate for consistency
+  "Italy": "Cinzel",
+  "Monaco": "Playfair_Display",
+  "Canada": "Open_Sans",
+  "Spain": "Lobster",
+  "Austria": "Merriweather",
+  "UK": "Libre_Baskerville", // Use 'Libre Baskerville' as alternative to 'Baskerville'
+  "Hungary": "Lora",
+  "Belgium": "Alegreya",
+  "Netherlands": "Josefin_Sans",
+  "Azerbaijan": "Rubik",
+  "Singapore": "Poppins",
+  "Mexico": "Abril_Fatface",
+  "Brazil": "Kaushan_Script",
+};
+
+
 const RaceCard = ({
   raceName,
   circuitName,
@@ -46,7 +72,8 @@ const RaceCard = ({
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [raceCountdown, setRaceCountdown] = useState(calculateCountdown(`${date}T${time}`));
   const countryCode = countryCodes[country];
-  const [isCollapsed, setIsCollapsed] = useState(true); // Start all cards in collapsed state
+  const fontClass = countryFontClasses[country] || ''; // Default to an empty string if no specific class is found
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,31 +85,25 @@ const RaceCard = ({
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   const mapImageUrl = `https://api.mapbox.com/styles/v1/superjan/clt73t4aa00yi01qua3sbbo1t/static/${coordinates.long},${coordinates.lat},10/500x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`;
-  const cardClasses = `race-card ${isClosestFutureRace ? 'closest-future-race' : ''}`;
+  const cardClasses = `race-card ${isClosestFutureRace ? 'closest-future-race' : ''} ${fontClass}`; // Include the font class
 
   return (
     <div className={cardClasses} style={{ backgroundImage: `url(${mapImageUrl})` }} onClick={toggleCollapse}>
       <div className="race-card-overlay"></div>
       <div className="race-card-content">
-  <h3 className="race-name">{raceName}
-    <p className="raceCountdown">{finished ? "Race Finished" : raceCountdown}</p>
-    <div className="flag-container">
-      <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
-    </div>
-  </h3>
-  {isCollapsed ? (
-    // Collapsed view
-    <p className="race-summary">
-      {finished ? 
-        `Winner: ${top3 ? top3[0].driver : 'N/A'}` : // Display winner's name if race is finished
-        `` 
-      }
-    </p>
+        <h3 className="race-name">{raceName}
+          <p className="raceCountdown">{finished ? "Race Finished" : raceCountdown}</p>
+          <div className="flag-container">
+            <img src={`https://flagsapi.com/${countryCode}/flat/64.png`} alt={`${country} flag`} style={{ width: '64px', height: '64px' }} />
+          </div>
+        </h3>
+        {isCollapsed ? (
+          <p className="race-summary">
+            {finished ? `Winner: ${top3 ? top3[0].driver : 'N/A'}` : ``}
+          </p>
         ) : (
-          // Expanded view
           <>
             <p className="circuit-name">{circuitName} - {locality}, {country}</p>
-            {/* <p className="race-countdown">{finished ? "Race Finished" : raceCountdown}</p> */}
             <p className="date">Race Date: {date}</p>
             <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
             <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>

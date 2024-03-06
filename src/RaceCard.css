@@ -1,3 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Arimo:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Libre+Franklin:wght@400;700&family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;700&family=Lobster:wght@400;700&family=Merriweather:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Lora:wght@400;700&family=Alegreya:wght@400;700&family=Josefin+Sans:wght@400;700&family=Rubik:wght@400;700&family=Poppins:wght@400;700&family=Abril+Fatface:wght@400;700&family=Kaushan+Script:wght@400;700&display=swap');
+
+.Amiri { font-family: 'Amiri', serif; }
+.Arimo { font-family: 'Arimo', sans-serif; }
+.M_PLUS_Rounded_1c { font-family: 'M PLUS Rounded 1c', sans-serif; }
+.Noto_Sans_SC { font-family: 'Noto Sans SC', sans-serif; }
+.Libre_Franklin { font-family: 'Libre Franklin', sans-serif; }
+.Cinzel { font-family: 'Cinzel', serif; }
+.Playfair_Display { font-family: 'Playfair Display', serif; }
+.Open_Sans { font-family: 'Open Sans', sans-serif; }
+.Lobster { font-family: 'Lobster', cursive; }
+.Merriweather { font-family: 'Merriweather', serif; }
+/* Note: Adjusted to Libre Baskerville for a closer match to Baskerville */
+.Baskerville { font-family: 'Libre Baskerville', serif; }
+.Lora { font-family: 'Lora', serif; }
+.Alegreya { font-family: 'Alegreya', serif; }
+.Josefin_Sans { font-family: 'Josefin Sans', sans-serif; }
+.Rubik { font-family: 'Rubik', sans-serif; }
+.Poppins { font-family: 'Poppins', sans-serif; }
+.Abril_Fatface { font-family: 'Abril Fatface', cursive; }
+.Kaushan_Script { font-family: 'Kaushan Script', cursive; }
+
+
 .race-card {
   background-size: cover;
   padding: 15px;
