@@ -103,8 +103,9 @@ const F1Season2024 = () => {
   const closestFutureRaceIndex = getClosestFutureRaceIndex();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="spinner"></div>; // Use the spinner CSS class here
   }
+  
 
   if (error) {
     return <div className="error">Error: {error}</div>;
