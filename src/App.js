@@ -42,7 +42,7 @@ function App() {
             },
             {
               role: "user",
-              content: "Provide a unique F1 fact."
+              content: "Provide a unique F1 fact. Be short and to the point."
             }
           ],
           temperature: 0.7,
