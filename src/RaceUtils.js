@@ -40,3 +40,5 @@ export const simplifyCountdown = (days, hours, minutes) => {
     return sessionDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZoneName: 'short', timeZone });
   };
   
+
+  

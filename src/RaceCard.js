@@ -52,6 +52,12 @@ const countryFontClasses = {
   "Brazil": "Kaushan_Script",
 };
 
+const formatDateWithDay = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+};
+
+
 
 const RaceCard = ({
   raceName,
@@ -104,7 +110,8 @@ const RaceCard = ({
         ) : (
           <>
             <p className="circuit-name">{circuitName} - {locality}, {country}</p>
-            <p className="date">Race Date: {date}</p>
+            <p className="date">Race Date: {formatDateWithDay(date)}</p>
+
             <p className="time">Local Time: {formatSession({date, time}, 'UTC')}</p>
             <p className="user-time">Your Time: {formatSession({date, time}, userTimeZone)}</p>
             {finished && top3 && (
