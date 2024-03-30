@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.18.6",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -11,15 +12,27 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
-    "@babel/plugin-proposal-private-property-in-object": "^7.18.6"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,scss,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css,scss,json,md}\"",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "test:coverage": "react-scripts test --coverage",
+    "clean": "rimraf build/",
+    "predeploy": "npm run clean && npm run build",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "prepare:deploy": "npm run lint && npm run format && npm run test:coverage && npm run predeploy",
+    "full:deploy": "npm run prepare:deploy && npm run deploy"
+  }
+  ,
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -37,5 +50,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "source-map-explorer": "^2.5.3"
   }
 }

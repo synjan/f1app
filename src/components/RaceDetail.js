@@ -14,7 +14,7 @@ const RaceDetail = ({ race, onBackClick }) => {
     const fetchRaceResults = async () => {
       try {
         const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/results.json`
+          `https://ergast.com/api/f1/${race.season}/${race.round}/results.json`,
         );
         setRaceResults(response.data.MRData.RaceTable.Races[0].Results);
       } catch (error) {
@@ -26,10 +26,10 @@ const RaceDetail = ({ race, onBackClick }) => {
     const fetchPracticeResults = async () => {
       try {
         const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`
+          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`,
         );
         setPracticeResults(
-          response.data.MRData.RaceTable.Races[0].QualifyingResults
+          response.data.MRData.RaceTable.Races[0].QualifyingResults,
         );
       } catch (error) {
         setError("Failed to fetch practice results. Please try again.");
@@ -40,10 +40,10 @@ const RaceDetail = ({ race, onBackClick }) => {
     const fetchQualifyingResults = async () => {
       try {
         const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`
+          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`,
         );
         setQualifyingResults(
-          response.data.MRData.RaceTable.Races[0].QualifyingResults
+          response.data.MRData.RaceTable.Races[0].QualifyingResults,
         );
       } catch (error) {
         setError("Failed to fetch qualifying results. Please try again.");
@@ -127,7 +127,11 @@ const RaceDetail = ({ race, onBackClick }) => {
       <p>{race.Circuit.circuitName}</p>
       <p>{formatSessionDate(race.date)}</p>
       {renderSessionInfo("Practice", race.FirstPractice?.date, practiceResults)}
-      {renderSessionInfo("Qualifying", race.Qualifying?.date, qualifyingResults)}
+      {renderSessionInfo(
+        "Qualifying",
+        race.Qualifying?.date,
+        qualifyingResults,
+      )}
       {renderSessionInfo("Race", race.date, raceResults)}
       <button onClick={onBackClick}>Back</button>
     </div>
