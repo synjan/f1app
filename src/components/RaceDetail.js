@@ -5,7 +5,6 @@ import "./RaceDetail.css";
 
 const RaceDetail = ({ race, onBackClick }) => {
   const [raceResults, setRaceResults] = useState(null);
-  const [practiceResults, setPracticeResults] = useState(null);
   const [qualifyingResults, setQualifyingResults] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,20 +19,6 @@ const RaceDetail = ({ race, onBackClick }) => {
       } catch (error) {
         setError("Failed to fetch race results. Please try again.");
         console.error("Error fetching race results:", error);
-      }
-    };
-
-    const fetchPracticeResults = async () => {
-      try {
-        const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`,
-        );
-        setPracticeResults(
-          response.data.MRData.RaceTable.Races[0].QualifyingResults,
-        );
-      } catch (error) {
-        setError("Failed to fetch practice results. Please try again.");
-        console.error("Error fetching practice results:", error);
       }
     };
 
@@ -56,11 +41,7 @@ const RaceDetail = ({ race, onBackClick }) => {
       setError(null);
 
       if (new Date(race.date) < new Date()) {
-        await Promise.all([
-          fetchRaceResults(),
-          fetchPracticeResults(),
-          fetchQualifyingResults(),
-        ]);
+        await Promise.all([fetchRaceResults(), fetchQualifyingResults()]);
       }
 
       setIsLoading(false);
@@ -81,17 +62,34 @@ const RaceDetail = ({ race, onBackClick }) => {
   };
 
   const formatSessionDate = (sessionDate) => {
-    return format(new Date(sessionDate), "MMMM d, yyyy");
+    if (sessionDate) {
+      return format(new Date(sessionDate), "MMMM d, yyyy");
+    }
+    return "Date not available";
   };
 
-  const renderSessionInfo = (sessionName, sessionDate, results) => {
+  const formatSessionTime = (sessionTime) => {
+    if (sessionTime) {
+      return format(new Date(`${race.date}T${sessionTime}`), "h:mm a");
+    }
+    return "Time not available";
+  };
+
+  const renderSessionInfo = (
+    sessionName,
+    sessionDate,
+    sessionTime,
+    results,
+  ) => {
     const countdown = getSessionCountdown(sessionDate);
     const formattedDate = formatSessionDate(sessionDate);
+    const formattedTime = formatSessionTime(sessionTime);
 
     return (
       <div>
         <h3>{sessionName}</h3>
         <p>{formattedDate}</p>
+        <p>Time: {formattedTime}</p>
         {countdown && <p>Countdown: {countdown}</p>}
         {results ? (
           <ul>
@@ -103,7 +101,7 @@ const RaceDetail = ({ race, onBackClick }) => {
             ))}
           </ul>
         ) : (
-          <p>Results not available yet.</p>
+          <p>Results not available.</p>
         )}
       </div>
     );
@@ -130,13 +128,13 @@ const RaceDetail = ({ race, onBackClick }) => {
       <h2>{race.raceName}</h2>
       <p>{race.Circuit.circuitName}</p>
       <p>{formatSessionDate(race.date)}</p>
-      {renderSessionInfo("Practice", race.FirstPractice?.date, practiceResults)}
       {renderSessionInfo(
         "Qualifying",
-        race.Qualifying?.date,
+        race.Qualifying.date,
+        race.Qualifying.time,
         qualifyingResults,
       )}
-      {renderSessionInfo("Race", race.date, raceResults)}
+      {renderSessionInfo("Race", race.date, race.time, raceResults)}
       <button className="back-button" onClick={onBackClick}>
         Back
       </button>
