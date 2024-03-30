@@ -76,6 +76,7 @@ const RaceDetail = ({ race, onBackClick }) => {
     if (sessionDateTime > currentDate) {
       return formatDistance(sessionDateTime, currentDate, { addSuffix: true });
     }
+
     return null;
   };
 
@@ -123,6 +124,9 @@ const RaceDetail = ({ race, onBackClick }) => {
 
   return (
     <div className="race-detail">
+      <button className="back-button" onClick={onBackClick}>
+        Back
+      </button>
       <h2>{race.raceName}</h2>
       <p>{race.Circuit.circuitName}</p>
       <p>{formatSessionDate(race.date)}</p>
@@ -133,7 +137,9 @@ const RaceDetail = ({ race, onBackClick }) => {
         qualifyingResults,
       )}
       {renderSessionInfo("Race", race.date, raceResults)}
-      <button onClick={onBackClick}>Back</button>
+      <button className="back-button" onClick={onBackClick}>
+        Back
+      </button>
     </div>
   );
 };
