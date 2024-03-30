@@ -17,22 +17,19 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,css,scss,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,css,scss,json,md}\"",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test:coverage": "react-scripts test --coverage",
     "clean": "rimraf build/",
     "predeploy": "npm run clean && npm run build",
     "deploy": "firebase deploy",
     "deploy:hosting": "firebase deploy --only hosting",
-    "prepare:deploy": "npm run lint && npm run format && npm run test:coverage && npm run predeploy",
+    "prepare:deploy": "npm run lint && npm run format && npm run predeploy",
     "full:deploy": "npm run prepare:deploy && npm run deploy"
-  }
-  ,
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

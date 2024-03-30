@@ -3,4 +3,28 @@
   padding: 20px;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.race-card:hover {
+  background-color: #e0e0e0;
+}
+
+.race-card.upcoming {
+  background-color: #c8e6c9;
+}
+
+.race-card.ongoing {
+  background-color: #fff9c4;
+}
+
+.race-card.completed {
+  background-color: #ffcdd2;
+}
+
+.race-status {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 10px;
+  display: block;
 }
