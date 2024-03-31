@@ -36,15 +36,16 @@ const RaceCard = ({ race, onClick }) => {
       {isUpcoming && (
         <AddToCalendarButton
           name={raceName}
-          startDate={date}
-          startTime={format(raceDateTime, "HH:mm")}
+          startDate={format(raceDateTime, "yyyy-MM-dd")} // Ensure date is in ISO format
+          startTime={format(raceDateTime, "HH:mm", { timeZone: "Europe/Oslo" })} // Format startTime in 24-hour format with Oslo time zone
           endTime={format(
             new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000),
             "HH:mm",
+            { timeZone: "Europe/Oslo" }, // Ensure endTime is calculated with the Oslo time zone
           )}
-          timeZone="UTC"
+          timeZone="Europe/Oslo" // Set the timeZone prop to Europe/Oslo
           description={`${raceName} at ${Circuit.circuitName}`}
-          options={["Apple", "Google", "iCal", "Outlook.com"]}
+          options={["Apple", "Google", "iCal"]}
           buttonsList
           hideTextLabelButton
           buttonStyle="round"
