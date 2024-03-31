@@ -20,10 +20,10 @@ const RaceCard = ({ race, onClick }) => {
   const raceStatus = isUpcoming
     ? "Upcoming"
     : isOngoing
-      ? "Ongoing"
-      : isCompleted
-        ? "Completed"
-        : "";
+    ? "Ongoing"
+    : isCompleted
+    ? "Completed"
+    : "";
 
   return (
     <div className={`race-card ${raceStatus.toLowerCase()}`} onClick={onClick}>
@@ -34,23 +34,27 @@ const RaceCard = ({ race, onClick }) => {
       <p>{countdownText}</p>
       <span className="race-status">{raceStatus}</span>
       {isUpcoming && (
-        <AddToCalendarButton
-          name={raceName}
-          startDate={format(raceDateTime, "yyyy-MM-dd")} // Ensure date is in ISO format
-          startTime={format(raceDateTime, "HH:mm", { timeZone: "Europe/Oslo" })} // Format startTime in 24-hour format with Oslo time zone
-          endTime={format(
-            new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000),
-            "HH:mm",
-            { timeZone: "Europe/Oslo" }, // Ensure endTime is calculated with the Oslo time zone
-          )}
-          timeZone="Europe/Oslo" // Set the timeZone prop to Europe/Oslo
-          description={`${raceName} at ${Circuit.circuitName}`}
-          options={["Apple", "Google", "iCal"]}
-          buttonsList
-          hideTextLabelButton
-          buttonStyle="round"
-          lightMode="bodyScheme"
-        />
+        <div className="calendar-section">
+          <h4>Add to Calendar</h4>
+          <p>Click the button below to add this race to your preferred calendar:</p>
+          <AddToCalendarButton
+            name={raceName}
+            startDate={format(raceDateTime, "yyyy-MM-dd")}
+            startTime={format(raceDateTime, "HH:mm", { timeZone: "Europe/Oslo" })}
+            endTime={format(
+              new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000),
+              "HH:mm",
+              { timeZone: "Europe/Oslo" }
+            )}
+            timeZone="Europe/Oslo"
+            description={`${raceName} at ${Circuit.circuitName}`}
+            options={["Apple", "Google", "iCal"]}
+            buttonsList
+            hideTextLabelButton
+            buttonStyle="round"
+            lightMode="bodyScheme"
+          />
+        </div>
       )}
     </div>
   );
