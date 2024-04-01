@@ -4,9 +4,12 @@ import "./RaceCard.css";
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 
 const RaceCard = ({ race, onClick }) => {
-  const { raceName, Circuit, date, time, Qualifying } = race;
+  const { raceName, Circuit, date, time, Qualifying, Sprint } = race;
   const raceDateTime = new Date(`${date}T${time}`);
   const qualifyingDateTime = new Date(`${Qualifying.date}T${Qualifying.time}`);
+  const sprintDateTime = Sprint
+    ? new Date(`${Sprint.date}T${Sprint.time}`)
+    : null;
 
   const countdownText = formatDistance(raceDateTime, new Date(), {
     addSuffix: true,
@@ -33,6 +36,18 @@ const RaceCard = ({ race, onClick }) => {
     }
   };
 
+  const calendarButtonProps = {
+    listStyle: "overlay",
+    buttonStyle: "text",
+    trigger: "click",
+    size: "4",
+    hideBackground: true,
+    hideCheckmark: true,
+    lightMode: "bodyScheme",
+    language: "en",
+    options: ["Apple", "Google", "iCal"],
+  };
+
   return (
     <div
       className={`race-card ${raceStatus.toLowerCase()}`}
@@ -45,6 +60,7 @@ const RaceCard = ({ race, onClick }) => {
       </p>
       {isUpcoming && (
         <AddToCalendarButton
+          {...calendarButtonProps}
           name={`Qualifying: ${raceName}`}
           description={`Qualifying for ${raceName} at ${Circuit.circuitName}`}
           startDate={format(qualifyingDateTime, "yyyy-MM-dd")}
@@ -52,28 +68,43 @@ const RaceCard = ({ race, onClick }) => {
             timeZone: "Europe/Oslo",
           })}
           endTime={format(
-            new Date(qualifyingDateTime.getTime() + 1 * 60 * 60 * 1000), // Assuming qualifying lasts 1 hour
+            new Date(qualifyingDateTime.getTime() + 1 * 60 * 60 * 1000),
             "HH:mm",
             { timeZone: "Europe/Oslo" },
           )}
           timeZone="Europe/Oslo"
           location={Circuit.circuitName}
-          options={["Apple", "Google", "iCal"]}
-          listStyle="overlay"
-          buttonStyle="text"
-          trigger="click"
-          size="4"
-          hideBackground
-          hideCheckmark
-          lightMode="bodyScheme"
-          language="en"
         />
+      )}
+      {Sprint && (
+        <>
+          <p>Sprint: {format(sprintDateTime, "EEEE, MMMM d, yyyy - h:mm a")}</p>
+          {isUpcoming && (
+            <AddToCalendarButton
+              {...calendarButtonProps}
+              name={`Sprint: ${raceName}`}
+              description={`Sprint for ${raceName} at ${Circuit.circuitName}`}
+              startDate={format(sprintDateTime, "yyyy-MM-dd")}
+              startTime={format(sprintDateTime, "HH:mm", {
+                timeZone: "Europe/Oslo",
+              })}
+              endTime={format(
+                new Date(sprintDateTime.getTime() + 1 * 60 * 60 * 1000),
+                "HH:mm",
+                { timeZone: "Europe/Oslo" },
+              )}
+              timeZone="Europe/Oslo"
+              location={Circuit.circuitName}
+            />
+          )}
+        </>
       )}
       <p>Race: {format(raceDateTime, "EEEE, MMMM d, yyyy - h:mm a")}</p>
       <p>{countdownText}</p>
       {isUpcoming && (
         <div className="calendar-section">
-          <add-to-calendar-button
+          <AddToCalendarButton
+            {...calendarButtonProps}
             name={raceName}
             description={`${raceName} at ${Circuit.circuitName}`}
             startDate={format(raceDateTime, "yyyy-MM-dd")}
@@ -87,16 +118,7 @@ const RaceCard = ({ race, onClick }) => {
             )}
             timeZone="Europe/Oslo"
             location={Circuit.circuitName}
-            options="'Apple','Google','iCal'"
-            listStyle="overlay"
-            buttonStyle="text"
-            trigger="click"
-            size="4"
-            hideBackground
-            hideCheckmark
-            lightMode="bodyScheme"
-            language="en"
-          ></add-to-calendar-button>
+          />
         </div>
       )}
     </div>
