@@ -3,6 +3,10 @@ import { formatDistance, format } from "date-fns";
 import "./RaceCard.css";
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 
+const TIME_ZONE = "Europe/Oslo";
+const RACE_DURATION_HRS = 2 * 60 * 60 * 1000;
+const QUALIFYING_SPRINT_DURATION_HRS = 1 * 60 * 60 * 1000;
+
 const RaceCard = ({ race, onClick }) => {
   const { raceName, Circuit, date, time, Qualifying, Sprint } = race;
   const raceDateTime = new Date(`${date}T${time}`);
@@ -18,9 +22,9 @@ const RaceCard = ({ race, onClick }) => {
   const isUpcoming = raceDateTime > new Date();
   const isOngoing =
     raceDateTime <= new Date() &&
-    new Date() <= new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000);
+    new Date() <= new Date(raceDateTime.getTime() + RACE_DURATION_HRS);
   const isCompleted =
-    new Date() > new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000);
+    new Date() > new Date(raceDateTime.getTime() + RACE_DURATION_HRS);
 
   const raceStatus = isUpcoming
     ? "Upcoming"
@@ -47,6 +51,7 @@ const RaceCard = ({ race, onClick }) => {
     language: "en",
     options: ["Apple", "Google", "iCal"],
     label: "Calendar",
+    timeZone: TIME_ZONE,
   };
 
   return (
@@ -65,15 +70,11 @@ const RaceCard = ({ race, onClick }) => {
           name={`Qualifying: ${raceName}`}
           description={`Qualifying for ${raceName} at ${Circuit.circuitName}`}
           startDate={format(qualifyingDateTime, "yyyy-MM-dd")}
-          startTime={format(qualifyingDateTime, "HH:mm", {
-            timeZone: "Europe/Oslo",
-          })}
+          startTime={format(qualifyingDateTime, "HH:mm")}
           endTime={format(
-            new Date(qualifyingDateTime.getTime() + 1 * 60 * 60 * 1000),
-            "HH:mm",
-            { timeZone: "Europe/Oslo" },
+            new Date(qualifyingDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS),
+            "HH:mm"
           )}
-          timeZone="Europe/Oslo"
           location={Circuit.circuitName}
         />
       )}
@@ -86,15 +87,11 @@ const RaceCard = ({ race, onClick }) => {
               name={`Sprint: ${raceName}`}
               description={`Sprint for ${raceName} at ${Circuit.circuitName}`}
               startDate={format(sprintDateTime, "yyyy-MM-dd")}
-              startTime={format(sprintDateTime, "HH:mm", {
-                timeZone: "Europe/Oslo",
-              })}
+              startTime={format(sprintDateTime, "HH:mm")}
               endTime={format(
-                new Date(sprintDateTime.getTime() + 1 * 60 * 60 * 1000),
-                "HH:mm",
-                { timeZone: "Europe/Oslo" },
+                new Date(sprintDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS),
+                "HH:mm"
               )}
-              timeZone="Europe/Oslo"
               location={Circuit.circuitName}
             />
           )}
@@ -109,15 +106,11 @@ const RaceCard = ({ race, onClick }) => {
             name={raceName}
             description={`${raceName} at ${Circuit.circuitName}`}
             startDate={format(raceDateTime, "yyyy-MM-dd")}
-            startTime={format(raceDateTime, "HH:mm", {
-              timeZone: "Europe/Oslo",
-            })}
+            startTime={format(raceDateTime, "HH:mm")}
             endTime={format(
-              new Date(raceDateTime.getTime() + 2 * 60 * 60 * 1000),
-              "HH:mm",
-              { timeZone: "Europe/Oslo" },
+              new Date(raceDateTime.getTime() + RACE_DURATION_HRS),
+              "HH:mm"
             )}
-            timeZone="Europe/Oslo"
             location={Circuit.circuitName}
           />
         </div>
@@ -127,3 +120,5 @@ const RaceCard = ({ race, onClick }) => {
 };
 
 export default RaceCard;
+
+

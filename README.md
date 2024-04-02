@@ -1,3 +1,4 @@
+[![CodeQL](https://github.com/synjan/f1app/actions/workflows/codeql.yml/badge.svg)](https://github.com/synjan/f1app/actions/workflows/codeql.yml)
 # F1App
 
 F1App is a web application built with React that provides information about the current Formula 1 season. It allows users to view the race schedule, countdown to upcoming races, and see key race results.
