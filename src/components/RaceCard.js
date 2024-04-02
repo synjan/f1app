@@ -72,8 +72,10 @@ const RaceCard = ({ race, onClick }) => {
           startDate={format(qualifyingDateTime, "yyyy-MM-dd")}
           startTime={format(qualifyingDateTime, "HH:mm")}
           endTime={format(
-            new Date(qualifyingDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS),
-            "HH:mm"
+            new Date(
+              qualifyingDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS,
+            ),
+            "HH:mm",
           )}
           location={Circuit.circuitName}
         />
@@ -89,8 +91,10 @@ const RaceCard = ({ race, onClick }) => {
               startDate={format(sprintDateTime, "yyyy-MM-dd")}
               startTime={format(sprintDateTime, "HH:mm")}
               endTime={format(
-                new Date(sprintDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS),
-                "HH:mm"
+                new Date(
+                  sprintDateTime.getTime() + QUALIFYING_SPRINT_DURATION_HRS,
+                ),
+                "HH:mm",
               )}
               location={Circuit.circuitName}
             />
@@ -109,7 +113,7 @@ const RaceCard = ({ race, onClick }) => {
             startTime={format(raceDateTime, "HH:mm")}
             endTime={format(
               new Date(raceDateTime.getTime() + RACE_DURATION_HRS),
-              "HH:mm"
+              "HH:mm",
             )}
             location={Circuit.circuitName}
           />
@@ -120,5 +124,3 @@ const RaceCard = ({ race, onClick }) => {
 };
 
 export default RaceCard;
-
-

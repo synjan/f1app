@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import RaceCard from "./components/RaceCard";
 import RaceDetail from "./components/RaceDetail";
-import { TailSpin } from "react-loader-spinner";
+import LoadingScreen from "react-loading-screen"; // Import LoadingScreen component
 import "./App.css";
 
 const App = () => {
@@ -24,11 +24,11 @@ const App = () => {
       } catch (error) {
         console.error("Error fetching races:", error);
         setIsLoading(false);
-        if (error.response && error.response.status === 503) {
-          setError("Service Unavailable. Please try again later.");
-        } else {
-          setError("An error occurred. Please try again.");
-        }
+        setError(
+          error.response && error.response.status === 503
+            ? "Service Unavailable. Please try again later."
+            : "An error occurred. Please try again.",
+        );
       }
     };
 
@@ -52,34 +52,40 @@ const App = () => {
     setSelectedRace(race);
   };
 
+  // Wrap the entire return statement with LoadingScreen component
   return (
-    <div className="app">
-      <h1>F1App</h1>
-      {isLoading ? (
-        <div className="spinner">
-          <TailSpin color="#00BFFF" height={80} width={80} />
-        </div>
-      ) : error ? (
-        <div className="error">
-          <p>{error}</p>
-        </div>
-      ) : selectedRace ? (
-        <RaceDetail
-          race={selectedRace}
-          onBackClick={() => setSelectedRace(null)}
-        />
-      ) : (
-        <div className="race-list" ref={raceListRef}>
-          {races.map((race) => (
-            <RaceCard
-              key={race.round}
-              race={race}
-              onClick={() => handleRaceClick(race)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    <LoadingScreen
+      loading={isLoading}
+      bgColor="#f1f1f1"
+      spinnerColor="#9ee5f8"
+      textColor="#676767"
+      logoSrc="https://upload.wikimedia.org/wikipedia/commons/8/80/FIA_Formula_One_World_Championship_Logo.svg" // Ensure you have 'logo.png' in your public folder or update this path
+      text="Loading..."
+    >
+      <div className="app">
+        <h1>F1App</h1>
+        {error ? (
+          <div className="error">
+            <p>{error}</p>
+          </div>
+        ) : selectedRace ? (
+          <RaceDetail
+            race={selectedRace}
+            onBackClick={() => setSelectedRace(null)}
+          />
+        ) : (
+          <div className="race-list" ref={raceListRef}>
+            {races.map((race) => (
+              <RaceCard
+                key={race.round}
+                race={race}
+                onClick={() => handleRaceClick(race)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </LoadingScreen>
   );
 };
 

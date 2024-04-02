@@ -13,6 +13,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-loader-spinner": "^6.1.6",
+    "react-loading-screen": "^0.0.17",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
