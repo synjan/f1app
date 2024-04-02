@@ -1,130 +1,132 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { format, formatDistance } from "date-fns";
+import { TailSpin } from "react-loader-spinner";
 import "./RaceDetail.css";
 
-const RaceDetail = ({ race, onBackClick }) => {
-  const [raceResults, setRaceResults] = useState(null);
-  const [qualifyingResults, setQualifyingResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Extracts BackButton for reuse
+const BackButton = ({ onClick }) => (
+  <button className="back-button" onClick={onClick}>
+    Back
+  </button>
+);
+
+// Custom hook for data fetching
+const useRaceData = (race) => {
+  const [data, setData] = useState({
+    raceResults: null,
+    qualifyingResults: null,
+    isLoading: true,
+    error: null,
+  });
 
   useEffect(() => {
-    const fetchRaceResults = async () => {
-      try {
-        const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/results.json`,
-        );
-        setRaceResults(response.data.MRData.RaceTable.Races[0].Results);
-      } catch (error) {
-        setError("Failed to fetch race results. Please try again.");
-        console.error("Error fetching race results:", error);
-      }
-    };
-
-    const fetchQualifyingResults = async () => {
-      try {
-        const response = await axios.get(
-          `https://ergast.com/api/f1/${race.season}/${race.round}/qualifying.json`,
-        );
-        setQualifyingResults(
-          response.data.MRData.RaceTable.Races[0].QualifyingResults,
-        );
-      } catch (error) {
-        setError("Failed to fetch qualifying results. Please try again.");
-        console.error("Error fetching qualifying results:", error);
-      }
-    };
-
     const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      if (new Date(race.date) < new Date()) {
-        await Promise.all([fetchRaceResults(), fetchQualifyingResults()]);
+      setData((prevState) => ({ ...prevState, isLoading: true })); // Using functional update
+      try {
+        const raceResultsUrl = `${process.env.REACT_APP_API_BASE_URL}/${race.season}/${race.round}/results.json`;
+        const qualifyingResultsUrl = `${process.env.REACT_APP_API_BASE_URL}/${race.season}/${race.round}/qualifying.json`;
+        const responses = await Promise.all([
+          axios.get(raceResultsUrl),
+          axios.get(qualifyingResultsUrl),
+        ]);
+        setData({
+          raceResults: responses[0].data.MRData.RaceTable.Races[0].Results,
+          qualifyingResults:
+            responses[1].data.MRData.RaceTable.Races[0].QualifyingResults,
+          isLoading: false,
+          error: null,
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setData((prevState) => ({
+          ...prevState,
+          isLoading: false,
+          error: "Failed to fetch data. Please try again later.",
+        })); // Also using functional update here
       }
-
-      setIsLoading(false);
     };
 
-    fetchData();
+    if (new Date(race.date) < new Date()) {
+      fetchData();
+    } else {
+      setData((prevState) => ({ ...prevState, isLoading: false })); // And here
+    }
   }, [race]);
 
+  return data;
+};
+
+const RaceDetail = ({ race, onBackClick }) => {
+  const { raceResults, qualifyingResults, isLoading, error } =
+    useRaceData(race);
+
+  // Utility functions...
+  const formatSessionDate = (sessionDate) =>
+    sessionDate
+      ? format(new Date(sessionDate), "MMMM d, yyyy")
+      : "Date not available";
+  const formatSessionTime = (sessionTime) =>
+    sessionTime
+      ? format(new Date(`${race.date}T${sessionTime}`), "h:mm a")
+      : "Time not available";
   const getSessionCountdown = (sessionDate) => {
     const currentDate = new Date();
     const sessionDateTime = new Date(sessionDate);
-
-    if (sessionDateTime > currentDate) {
-      return formatDistance(sessionDateTime, currentDate, { addSuffix: true });
-    }
-
-    return null;
+    return sessionDateTime > currentDate
+      ? formatDistance(sessionDateTime, currentDate, { addSuffix: true })
+      : null;
   };
 
-  const formatSessionDate = (sessionDate) => {
-    if (sessionDate) {
-      return format(new Date(sessionDate), "MMMM d, yyyy");
-    }
-    return "Date not available";
-  };
-
-  const formatSessionTime = (sessionTime) => {
-    if (sessionTime) {
-      return format(new Date(`${race.date}T${sessionTime}`), "h:mm a");
-    }
-    return "Time not available";
-  };
-
-  const renderSessionInfo = (
-    sessionName,
-    sessionDate,
-    sessionTime,
-    results,
-  ) => {
-    const countdown = getSessionCountdown(sessionDate);
-    const formattedDate = formatSessionDate(sessionDate);
-    const formattedTime = formatSessionTime(sessionTime);
-
+  // Component rendering logic...
+  if (isLoading) {
     return (
-      <div>
-        <h3>{sessionName}</h3>
-        <p>{formattedDate}</p>
-        <p>Time: {formattedTime}</p>
-        {countdown && <p>Countdown: {countdown}</p>}
-        {results ? (
-          <ul>
-            {results.map((result) => (
-              <li key={result.position}>
-                {result.position}. {result.Driver.givenName}{" "}
-                {result.Driver.familyName} ({result.Constructor.name})
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Results not available.</p>
-        )}
+      <div className="loading">
+        <TailSpin color="#00BFFF" height={80} width={80} />
       </div>
     );
-  };
-
-  if (isLoading) {
-    return <div className="loading">Loading race details...</div>;
   }
 
   if (error) {
     return (
       <div className="error">
         <p>{error}</p>
-        <button onClick={onBackClick}>Back</button>
+        <BackButton onClick={onBackClick} />
       </div>
     );
   }
 
+  const renderSessionInfo = (
+    sessionName,
+    sessionDate,
+    sessionTime,
+    results,
+  ) => (
+    <div>
+      <h3>{sessionName}</h3>
+      <p>{formatSessionDate(sessionDate)}</p>
+      <p>Time: {formatSessionTime(sessionTime)}</p>
+      {getSessionCountdown(sessionDate) && (
+        <p>Countdown: {getSessionCountdown(sessionDate)}</p>
+      )}
+      {results ? (
+        <ul>
+          {results.map((result) => (
+            <li key={result.position}>
+              {result.position}. {result.Driver.givenName}{" "}
+              {result.Driver.familyName} ({result.Constructor.name})
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Results not available.</p>
+      )}
+    </div>
+  );
+
   return (
     <div className="race-detail">
-      <button className="back-button" onClick={onBackClick}>
-        Back
-      </button>
+      <BackButton onClick={onBackClick} />
       <h2>{race.raceName}</h2>
       <p>{race.Circuit.circuitName}</p>
       <p>{formatSessionDate(race.date)}</p>
@@ -135,9 +137,7 @@ const RaceDetail = ({ race, onBackClick }) => {
         qualifyingResults,
       )}
       {renderSessionInfo("Race", race.date, race.time, raceResults)}
-      <button className="back-button" onClick={onBackClick}>
-        Back
-      </button>
+      <BackButton onClick={onBackClick} />
     </div>
   );
 };

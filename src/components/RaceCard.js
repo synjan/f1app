@@ -46,6 +46,7 @@ const RaceCard = ({ race, onClick }) => {
     lightMode: "bodyScheme",
     language: "en",
     options: ["Apple", "Google", "iCal"],
+    label: "Calendar",
   };
 
   return (
