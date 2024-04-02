@@ -8,21 +8,27 @@ import "./App.css";
 const App = () => {
   const [races, setRaces] = useState([]);
   const [selectedRace, setSelectedRace] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const raceListRef = useRef(null);
 
   useEffect(() => {
     const fetchRaces = async () => {
       try {
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
         const response = await axios.get(
           "https://ergast.com/api/f1/current.json",
         );
         setRaces(response.data.MRData.RaceTable.Races);
-        setIsLoading(false); // Stop loading once data is fetched
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching races:", error);
-        setIsLoading(false); // Stop loading in case of error
+        setIsLoading(false);
+        if (error.response && error.response.status === 503) {
+          setError("Service Unavailable. Please try again later.");
+        } else {
+          setError("An error occurred. Please try again.");
+        }
       }
     };
 
@@ -35,7 +41,6 @@ const App = () => {
       const nextRaceIndex = races.findIndex(
         (race) => new Date(race.date) > today,
       );
-
       if (nextRaceIndex !== -1 && raceListRef.current) {
         const raceCardElement = raceListRef.current.children[nextRaceIndex];
         raceCardElement.scrollIntoView({ behavior: "smooth" });
@@ -53,6 +58,10 @@ const App = () => {
       {isLoading ? (
         <div className="spinner">
           <TailSpin color="#00BFFF" height={80} width={80} />
+        </div>
+      ) : error ? (
+        <div className="error">
+          <p>{error}</p>
         </div>
       ) : selectedRace ? (
         <RaceDetail

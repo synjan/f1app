@@ -22,15 +22,21 @@
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
-    "format": "prettier --write \"src/**/*.{js,jsx,css,scss,json,md}\"",
-    "format:check": "prettier --check \"src/**/*.{js,jsx,css,scss,json,md}\"",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,scss,json,md}\" \"tests/**/*.{js,jsx}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css,scss,json,md}\" \"tests/**/*.{js,jsx}\"",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "clean": "rimraf build/",
     "predeploy": "npm run clean && npm run build",
     "deploy": "firebase deploy",
     "deploy:hosting": "firebase deploy --only hosting",
-    "prepare:deploy": "npm run lint && npm run format && npm run predeploy",
-    "full:deploy": "npm run prepare:deploy && npm run deploy"
+    "prepare:deploy": "npm run lint && npm run format && npm run ci:test && npm run predeploy",
+    "full:deploy": "npm run prepare:deploy && npm run deploy",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "prepare:test": "npm run build",
+    "ci:test": "npm run prepare:test && npm run test"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.42.1",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
