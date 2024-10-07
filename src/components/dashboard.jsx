@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [error, setError] = useState(null)
   const [nextRace, setNextRace] = useState(null)
   const [selectedRace, setSelectedRace] = useState(null)
+  const [showAllRaces, setShowAllRaces] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,10 +71,19 @@ export default function Dashboard() {
     fetchData()
   }, [])
 
-  const getUpcomingRaces = () => {
-    const today = new Date()
-    return races.filter(race => new Date(`${race.date}T${race.time}`) > today).slice(0, 3)
-  }
+  const getDisplayedRaces = () => {
+    const today = new Date();
+    if (showAllRaces) {
+      return races.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+    } else {
+      return races.filter(race => new Date(`${race.date}T${race.time}`) > today).slice(0, 3);
+    }
+  };
+
+  const isPastRace = (race) => {
+    const raceDate = new Date(`${race.date}T${race.time}`);
+    return raceDate < new Date();
+  };
 
   const handleRaceClick = (race) => {
     setSelectedRace(selectedRace && selectedRace.round === race.round ? null : race)
@@ -100,19 +110,32 @@ export default function Dashboard() {
         <div className="grid gap-6">
           {nextRace && <RaceCountdown nextRace={nextRace} />}
           <section>
-            <h2 className="text-2xl font-bold mb-4 font-heading">Upcoming Races</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold font-heading">
+                {showAllRaces ? "Full Season Schedule" : "Upcoming Races"}
+              </h2>
+              <Button
+                onClick={() => setShowAllRaces(!showAllRaces)}
+                className="bg-secondary text-secondary-foreground"
+              >
+                {showAllRaces ? "Show Less" : "Show Full Season"}
+              </Button>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {getUpcomingRaces().map(race => (
+              {getDisplayedRaces().map(race => (
                 <div key={race.round}>
                   <Card 
                     className={`cursor-pointer transition-all hover:shadow-md ${
                       selectedRace && selectedRace.round === race.round ? 'ring-2 ring-primary' : ''
-                    }`}
+                    } ${isPastRace(race) ? 'opacity-60' : ''}`}
                     onClick={() => handleRaceClick(race)}
                   >
                     <CardHeader>
                       <CardTitle>{race.raceName}</CardTitle>
-                      <CardDescription>{formatDateTimeNordic(race.date, race.time)}</CardDescription>
+                      <CardDescription>
+                        {formatDateTimeNordic(race.date, race.time)}
+                        {isPastRace(race) && <span className="ml-2 text-muted-foreground">(Past)</span>}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center gap-4">
@@ -135,8 +158,7 @@ export default function Dashboard() {
                     <RaceDetails 
                       race={race} 
                       onClose={() => setSelectedRace(null)}
-                      // Remove this line
-                      // weatherData={race.round === nextRace.round ? weatherData : null}
+                      isPastRace={isPastRace(race)}
                     />
                   )}
                 </div>
@@ -251,6 +273,7 @@ function getCountryCode(countryName) {
     "Singapore": "sg",
     "Saudi Arabia": "sa",
     "Abu Dhabi": "ae",
+    "Qatar": "qa",  // Added Qatar
   };
   
   const lowercaseCountry = countryName.toLowerCase();
@@ -261,5 +284,10 @@ function getCountryCode(countryName) {
     }
   }
   
-  return lowercaseCountry.replace(/\s+/g, '');
+  // If the country is not found in our map, try to generate a code
+  const code = lowercaseCountry
+    .replace(/\s+/g, '')  // Remove spaces
+    .slice(0, 2);  // Take first two characters
+  
+  return code;
 }
