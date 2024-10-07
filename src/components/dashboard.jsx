@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// Remove this import if it's not used elsewhere
-// import axios from 'axios';
 import RaceCountdown from './RaceCountdown';
 import RaceDetails from './RaceDetails';
 import { formatDateTimeNordic } from '../utils/dateUtils';
@@ -18,66 +16,62 @@ const CardDescription = ({ children, ...props }) => <p className="text-sm text-m
 const CardContent = ({ children, ...props }) => <div className="p-6 pt-0" {...props}>{children}</div>;
 
 export default function Dashboard() {
-  const [races, setRaces] = useState([])
-  const [driverStandings, setDriverStandings] = useState([])
-  const [constructorStandings, setConstructorStandings] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [nextRace, setNextRace] = useState(null)
-  const [selectedRace, setSelectedRace] = useState(null)
+  const [races, setRaces] = useState([]);
+  const [driverStandings, setDriverStandings] = useState([]);
+  const [constructorStandings, setConstructorStandings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [nextRace, setNextRace] = useState(null);
+  const [selectedRace, setSelectedRace] = useState(null);
   const [showAllRaces, setShowAllRaces] = useState(false);
+  const [showPastRaces, setShowPastRaces] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+    fetchData();
+  }, []);
 
-        const [racesResponse, driversResponse, constructorsResponse] = await Promise.all([
-          fetch('https://ergast.com/api/f1/current.json'),
-          fetch('https://ergast.com/api/f1/current/driverStandings.json'),
-          fetch('https://ergast.com/api/f1/current/constructorStandings.json')
-        ])
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const racesData = await racesResponse.json()
-        const driversData = await driversResponse.json()
-        const constructorsData = await constructorsResponse.json()
+      const [racesResponse, driversResponse, constructorsResponse] = await Promise.all([
+        fetch('https://ergast.com/api/f1/current.json'),
+        fetch('https://ergast.com/api/f1/current/driverStandings.json'),
+        fetch('https://ergast.com/api/f1/current/constructorStandings.json')
+      ]);
 
-        setRaces(racesData.MRData.RaceTable.Races)
-        setDriverStandings(driversData.MRData.StandingsTable.StandingsLists[0].DriverStandings.slice(0, 3))
-        setConstructorStandings(constructorsData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.slice(0, 3))
+      const racesData = await racesResponse.json();
+      const driversData = await driversResponse.json();
+      const constructorsData = await constructorsResponse.json();
 
-        // Set the next race
-        const now = new Date()
-        const nextRace = racesData.MRData.RaceTable.Races.find(race => new Date(`${race.date}T${race.time}`) > now)
-        setNextRace(nextRace)
+      setRaces(racesData.MRData.RaceTable.Races);
+      setDriverStandings(driversData.MRData.StandingsTable.StandingsLists[0].DriverStandings.slice(0, 3));
+      setConstructorStandings(constructorsData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.slice(0, 3));
 
-        // Remove the weather API call
-        // if (nextRace) {
-        //   const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
-        //   const location = `${nextRace.Circuit.Location.locality},${nextRace.Circuit.Location.country}`;
-        //   const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${API_KEY}&units=metric`);
-        //   setWeatherData(weatherResponse.data.list.slice(0, 8));
-        // }
+      const now = new Date();
+      const nextRace = racesData.MRData.RaceTable.Races.find(race => new Date(`${race.date}T${race.time}`) > now);
+      setNextRace(nextRace);
 
-      } catch (err) {
-        console.error("Error fetching data:", err)
-        setError("Failed to load data. Please try again later.")
-      } finally {
-        setLoading(false)
-      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to load data. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-
-    fetchData()
-  }, [])
+  };
 
   const getDisplayedRaces = () => {
     const today = new Date();
-    if (showAllRaces) {
-      return races.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
-    } else {
-      return races.filter(race => new Date(`${race.date}T${race.time}`) > today).slice(0, 3);
+    let filteredRaces = races.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+    
+    if (!showAllRaces) {
+      filteredRaces = filteredRaces.filter(race => new Date(`${race.date}T${race.time}`) > today).slice(0, 3);
+    } else if (!showPastRaces) {
+      filteredRaces = filteredRaces.filter(race => new Date(`${race.date}T${race.time}`) >= today);
     }
+    
+    return filteredRaces;
   };
 
   const isPastRace = (race) => {
@@ -86,25 +80,21 @@ export default function Dashboard() {
   };
 
   const handleRaceClick = (race) => {
-    setSelectedRace(selectedRace && selectedRace.round === race.round ? null : race)
-  }
+    setSelectedRace(selectedRace && selectedRace.round === race.round ? null : race);
+  };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   if (error) {
-    return <div className="flex items-center justify-center h-screen text-destructive">Error: {error}</div>
+    return <div className="flex items-center justify-center h-screen text-destructive">Error: {error}</div>;
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between">
-        <span className="text-2xl font-bold font-heading">F1</span>
-        <Button className="bg-primary-foreground text-primary">
-          <BellIcon className="h-4 w-4 mr-2" />
-          Notifications
-        </Button>
+        <span className="text-2xl font-bold font-heading">F1 Dashboard</span>
       </header>
       <main className="flex-1 p-6 md:p-10">
         <div className="grid gap-6">
@@ -114,18 +104,31 @@ export default function Dashboard() {
               <h2 className="text-2xl font-bold font-heading">
                 {showAllRaces ? "Full Season Schedule" : "Upcoming Races"}
               </h2>
-              <Button
-                onClick={() => setShowAllRaces(!showAllRaces)}
-                className="bg-secondary text-secondary-foreground"
-              >
-                {showAllRaces ? "Show Less" : "Show Full Season"}
-              </Button>
+              <div className="flex items-center gap-4">
+                {showAllRaces && (
+                  <Button
+                    onClick={() => setShowPastRaces(!showPastRaces)}
+                    className="bg-secondary text-secondary-foreground transition-colors duration-200"
+                  >
+                    {showPastRaces ? "Hide Past Races" : "Show Past Races"}
+                  </Button>
+                )}
+                <Button
+                  onClick={() => {
+                    setShowAllRaces(!showAllRaces);
+                    if (!showAllRaces) setShowPastRaces(false);
+                  }}
+                  className="bg-primary text-primary-foreground transition-colors duration-200"
+                >
+                  {showAllRaces ? "Show Less" : "Show Full Season"}
+                </Button>
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {getDisplayedRaces().map(race => (
                 <div key={race.round}>
                   <Card 
-                    className={`cursor-pointer transition-all hover:shadow-md ${
+                    className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
                       selectedRace && selectedRace.round === race.round ? 'ring-2 ring-primary' : ''
                     } ${isPastRace(race) ? 'opacity-60' : ''}`}
                     onClick={() => handleRaceClick(race)}
@@ -221,26 +224,6 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
-  )
-}
-
-function BellIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </svg>
   )
 }
 
