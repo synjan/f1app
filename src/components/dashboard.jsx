@@ -10,10 +10,10 @@ const Button = ({ children, className, ...props }) => (
 const Card = ({ children, className, ...props }) => (
   <div className={`bg-card text-card-foreground rounded-lg shadow-sm ${className}`} {...props}>{children}</div>
 );
-const CardHeader = ({ children, ...props }) => <div className="p-6" {...props}>{children}</div>;
+const CardHeader = ({ children, ...props }) => <div className="p-4 sm:p-6" {...props}>{children}</div>;
 const CardTitle = ({ children, ...props }) => <h3 className="text-lg font-semibold" {...props}>{children}</h3>;
 const CardDescription = ({ children, ...props }) => <p className="text-sm text-muted-foreground" {...props}>{children}</p>;
-const CardContent = ({ children, ...props }) => <div className="p-6 pt-0" {...props}>{children}</div>;
+const CardContent = ({ children, ...props }) => <div className="p-4 sm:p-6 pt-0" {...props}>{children}</div>;
 
 export default function Dashboard() {
   const [races, setRaces] = useState([]);
@@ -93,22 +93,22 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between">
-        <span className="text-2xl font-bold font-heading">F1 Dashboard</span>
+      <header className="bg-primary text-primary-foreground py-4 px-4 sm:px-6 flex items-center justify-between">
+        <span className="text-xl sm:text-2xl font-bold font-heading">F1 Dashboard</span>
       </header>
-      <main className="flex-1 p-6 md:p-10">
-        <div className="grid gap-6">
+      <main className="flex-1 p-4 sm:p-6 md:p-10">
+        <div className="space-y-6">
           {nextRace && <RaceCountdown nextRace={nextRace} />}
           <section>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold font-heading">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-2 sm:space-y-0">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading">
                 {showAllRaces ? "Full Season Schedule" : "Upcoming Races"}
               </h2>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 {showAllRaces && (
                   <Button
                     onClick={() => setShowPastRaces(!showPastRaces)}
-                    className="bg-secondary text-secondary-foreground transition-colors duration-200"
+                    className="bg-secondary text-secondary-foreground transition-colors duration-200 text-sm sm:text-base"
                   >
                     {showPastRaces ? "Hide Past Races" : "Show Past Races"}
                   </Button>
@@ -118,13 +118,13 @@ export default function Dashboard() {
                     setShowAllRaces(!showAllRaces);
                     if (!showAllRaces) setShowPastRaces(false);
                   }}
-                  className="bg-primary text-primary-foreground transition-colors duration-200"
+                  className="bg-primary text-primary-foreground transition-colors duration-200 text-sm sm:text-base"
                 >
                   {showAllRaces ? "Show Less" : "Show Full Season"}
                 </Button>
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {getDisplayedRaces().map(race => (
                 <div key={race.round}>
                   <Card 
@@ -169,7 +169,7 @@ export default function Dashboard() {
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-bold mb-4 font-heading">Current Standings</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 font-heading">Current Standings</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <Card className="md:col-span-1">
                 <CardHeader>
