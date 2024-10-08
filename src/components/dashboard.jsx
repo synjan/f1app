@@ -7,15 +7,15 @@ import { getCountryCode } from '../utils/countryUtils';
 
 // Simple component definitions
 const Button = ({ children, className, ...props }) => (
-  <button className={`px-4 py-2 rounded-md ${className}`} {...props}>{children}</button>
+  <button className={`px-6 py-3 rounded-md text-xl lg:text-lg ${className}`} {...props}>{children}</button>
 );
 const Card = ({ children, className, ...props }) => (
   <div className={`bg-card text-card-foreground rounded-lg shadow-md ${className}`} {...props}>{children}</div>
 );
-const CardHeader = ({ children, ...props }) => <div className="p-4 lg:p-6" {...props}>{children}</div>;
-const CardTitle = ({ children, ...props }) => <h3 className="text-lg font-semibold" {...props}>{children}</h3>;
-const CardDescription = ({ children, ...props }) => <p className="text-sm text-muted-foreground" {...props}>{children}</p>;
-const CardContent = ({ children, ...props }) => <div className="p-4 lg:p-6 pt-0" {...props}>{children}</div>;
+const CardHeader = ({ children, ...props }) => <div className="p-6 lg:p-8" {...props}>{children}</div>;
+const CardTitle = ({ children, ...props }) => <h3 className="text-3xl lg:text-2xl font-semibold mb-2" {...props}>{children}</h3>;
+const CardDescription = ({ children, ...props }) => <p className="text-xl lg:text-lg text-muted-foreground" {...props}>{children}</p>;
+const CardContent = ({ children, ...props }) => <div className="px-6 pb-6 lg:px-8 lg:pb-8" {...props}>{children}</div>;
 
 export default function Dashboard() {
   const { races, driverStandings, constructorStandings, loading, error, nextRace } = useF1Data();
@@ -57,30 +57,30 @@ export default function Dashboard() {
     
     return (
       <>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {displayedStandings.map((item) => (
             <div key={isConstructor ? item.Constructor.constructorId : item.Driver.driverId} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-semibold">{item.position}</span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary font-semibold text-2xl">{item.position}</span>
                 </div>
                 <div>
-                  <p className="font-semibold">
+                  <p className="font-semibold text-2xl lg:text-xl">
                     {isConstructor ? item.Constructor.name : `${item.Driver.givenName} ${item.Driver.familyName}`}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xl lg:text-lg text-muted-foreground">
                     {isConstructor ? item.Constructor.nationality : item.Constructors[0].name}
                   </p>
                 </div>
               </div>
-              <div className="font-semibold">{item.points} PTS</div>
+              <div className="font-semibold text-2xl lg:text-xl">{item.points} PTS</div>
             </div>
           ))}
         </div>
         {standings.length > 3 && (
           <Button
             onClick={() => setShowAll(!showAll)}
-            className="mt-4 w-full bg-secondary text-secondary-foreground"
+            className="mt-6 w-full bg-secondary text-secondary-foreground"
           >
             {showAll ? "Show Top 3" : `Show All ${isConstructor ? "Constructors" : "Drivers"}`}
           </Button>
@@ -98,23 +98,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="bg-primary text-primary-foreground py-4 px-4 lg:px-6 flex items-center justify-between">
-        <span className="text-xl lg:text-2xl font-bold font-heading">F1 Dashboard</span>
+    <div className="flex flex-col min-h-screen bg-background text-foreground text-xl lg:text-lg">
+      <header className="bg-primary text-primary-foreground py-6 px-6 lg:px-8 flex items-center justify-between">
+        <span className="text-4xl lg:text-3xl font-bold font-heading">F1 Dashboard</span>
       </header>
-      <main className="flex-1 p-4 lg:p-6 xl:p-10">
-        <div className="space-y-6">
+      <main className="flex-1 p-6 lg:p-8 xl:p-10">
+        <div className="space-y-10">
           {nextRace && <RaceCountdown nextRace={nextRace} />}
           <section>
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 space-y-2 lg:space-y-0">
-              <h2 className="text-xl lg:text-2xl font-bold font-heading">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 space-y-4 lg:space-y-0">
+              <h2 className="text-4xl lg:text-3xl font-bold font-heading">
                 {showAllRaces ? "Full Season Schedule" : "Upcoming Races"}
               </h2>
-              <div className="flex flex-wrap items-center gap-2 lg:gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 {showAllRaces && (
                   <Button
                     onClick={() => setShowPastRaces(!showPastRaces)}
-                    className="bg-secondary text-secondary-foreground transition-colors duration-200 text-sm lg:text-base w-full lg:w-auto"
+                    className="bg-secondary text-secondary-foreground transition-colors duration-200 w-full lg:w-auto"
                   >
                     {showPastRaces ? "Hide Past Races" : "Show Past Races"}
                   </Button>
@@ -124,13 +124,13 @@ export default function Dashboard() {
                     setShowAllRaces(!showAllRaces);
                     if (!showAllRaces) setShowPastRaces(false);
                   }}
-                  className="bg-primary text-primary-foreground transition-colors duration-200 text-sm lg:text-base w-full lg:w-auto"
+                  className="bg-primary text-primary-foreground transition-colors duration-200 w-full lg:w-auto"
                 >
                   {showAllRaces ? "Show Less" : "Show Full Season"}
                 </Button>
               </div>
             </div>
-            <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
               {getDisplayedRaces().map(race => (
                 <div key={race.round}>
                   <Card 
@@ -147,7 +147,7 @@ export default function Dashboard() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-6">
                         <img
                           src={`https://flagcdn.com/w80/${getCountryCode(race.Circuit.Location.country)}.png`}
                           width="80"
@@ -157,8 +157,8 @@ export default function Dashboard() {
                           style={{ aspectRatio: "4/3" }}
                         />
                         <div>
-                          <p className="font-medium">{race.Circuit.circuitName}</p>
-                          <p className="text-sm text-muted-foreground">{race.Circuit.Location.locality}, {race.Circuit.Location.country}</p>
+                          <p className="text-2xl lg:text-xl font-medium">{race.Circuit.circuitName}</p>
+                          <p className="text-xl lg:text-lg text-muted-foreground">{race.Circuit.Location.locality}, {race.Circuit.Location.country}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -175,8 +175,8 @@ export default function Dashboard() {
             </div>
           </section>
           <section>
-            <h2 className="text-xl lg:text-2xl font-bold mb-4 font-heading">Current Standings</h2>
-            <div className="grid gap-4 xl:grid-cols-2">
+            <h2 className="text-4xl lg:text-3xl font-bold mb-8 font-heading">Current Standings</h2>
+            <div className="grid gap-8 xl:grid-cols-2">
               <Card>
                 <CardHeader>
                   <CardTitle>Driver Standings</CardTitle>
