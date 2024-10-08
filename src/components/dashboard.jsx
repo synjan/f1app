@@ -99,12 +99,19 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground text-xl lg:text-lg">
-      <header className="bg-primary text-primary-foreground py-6 px-6 lg:px-8 flex items-center justify-between">
-        <span className="text-4xl lg:text-3xl font-bold font-heading">F1 Dashboard</span>
+      <header className="bg-primary text-primary-foreground sticky top-0 z-10">
+        <div className="py-4 px-6 lg:px-8 flex items-center justify-between">
+          <span className="text-4xl lg:text-3xl font-bold font-heading">F1 Dashboard</span>
+          {nextRace && (
+            <div className="text-right">
+              <p className="text-lg lg:text-base font-medium">Next Race:</p>
+              <RaceCountdown nextRace={nextRace} />
+            </div>
+          )}
+        </div>
       </header>
-      <main className="flex-1 p-6 lg:p-8 xl:p-10">
-        <div className="space-y-10">
-          {nextRace && <RaceCountdown nextRace={nextRace} />}
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-6 lg:p-8 xl:p-10 space-y-10">
           <section>
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 space-y-4 lg:space-y-0">
               <h2 className="text-4xl lg:text-3xl font-bold font-heading">
