@@ -1,8 +1,15 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+// Mock axios
+jest.mock('axios');
+
+test('renders F1 Dashboard', async () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  
+  // Wait for the loading state to finish
+  await waitFor(() => {
+    expect(screen.getByText('F1 Dashboard')).toBeInTheDocument();
+  });
 });
