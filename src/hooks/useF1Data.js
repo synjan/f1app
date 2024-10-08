@@ -22,8 +22,8 @@ const useF1Data = () => {
         ]);
 
         setRaces(racesData);
-        setDriverStandings(driversData.slice(0, 3));
-        setConstructorStandings(constructorsData.slice(0, 3));
+        setDriverStandings(driversData); // Remove the slice to get all driver standings
+        setConstructorStandings(constructorsData); // Remove the slice to get all constructor standings
 
         const now = new Date();
         const nextRace = racesData.find(race => new Date(`${race.date}T${race.time}`) > now);

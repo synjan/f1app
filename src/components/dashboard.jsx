@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [selectedRace, setSelectedRace] = useState(null);
   const [showAllRaces, setShowAllRaces] = useState(false);
   const [showPastRaces, setShowPastRaces] = useState(false);
+  const [showAllDrivers, setShowAllDrivers] = useState(false);
+  const [showAllConstructors, setShowAllConstructors] = useState(false);
 
   const getDisplayedRaces = () => {
     const today = new Date();
@@ -48,6 +50,43 @@ export default function Dashboard() {
 
   const handleRaceClick = (race) => {
     setSelectedRace(selectedRace && selectedRace.round === race.round ? null : race);
+  };
+
+  const renderStandings = (standings, showAll, setShowAll, isConstructor = false) => {
+    const displayedStandings = showAll ? standings : standings.slice(0, 3);
+    
+    return (
+      <>
+        <div className="space-y-4">
+          {displayedStandings.map((item) => (
+            <div key={isConstructor ? item.Constructor.constructorId : item.Driver.driverId} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary font-semibold">{item.position}</span>
+                </div>
+                <div>
+                  <p className="font-semibold">
+                    {isConstructor ? item.Constructor.name : `${item.Driver.givenName} ${item.Driver.familyName}`}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {isConstructor ? item.Constructor.nationality : item.Constructors[0].name}
+                  </p>
+                </div>
+              </div>
+              <div className="font-semibold">{item.points} PTS</div>
+            </div>
+          ))}
+        </div>
+        {standings.length > 3 && (
+          <Button
+            onClick={() => setShowAll(!showAll)}
+            className="mt-4 w-full bg-secondary text-secondary-foreground"
+          >
+            {showAll ? "Show Top 3" : `Show All ${isConstructor ? "Constructors" : "Drivers"}`}
+          </Button>
+        )}
+      </>
+    );
   };
 
   if (loading) {
@@ -141,49 +180,19 @@ export default function Dashboard() {
               <Card className="md:col-span-1">
                 <CardHeader>
                   <CardTitle>Driver Standings</CardTitle>
-                  <CardDescription>Top 3 - Current Season</CardDescription>
+                  <CardDescription>Current Season</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {driverStandings.map((driver, index) => (
-                      <div key={driver.Driver.driverId} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-primary font-semibold">{index + 1}</span>
-                          </div>
-                          <div>
-                            <p className="font-semibold">{driver.Driver.givenName} {driver.Driver.familyName}</p>
-                            <p className="text-sm text-muted-foreground">{driver.Constructors[0].name}</p>
-                          </div>
-                        </div>
-                        <div className="font-semibold">{driver.points} PTS</div>
-                      </div>
-                    ))}
-                  </div>
+                  {renderStandings(driverStandings, showAllDrivers, setShowAllDrivers)}
                 </CardContent>
               </Card>
               <Card className="md:col-span-1">
                 <CardHeader>
                   <CardTitle>Constructor Standings</CardTitle>
-                  <CardDescription>Top 3 - Current Season</CardDescription>
+                  <CardDescription>Current Season</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {constructorStandings.map((constructor, index) => (
-                      <div key={constructor.Constructor.constructorId} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-primary font-semibold">{index + 1}</span>
-                          </div>
-                          <div>
-                            <p className="font-semibold">{constructor.Constructor.name}</p>
-                            <p className="text-sm text-muted-foreground">&nbsp;</p>
-                          </div>
-                        </div>
-                        <div className="font-semibold">{constructor.points} PTS</div>
-                      </div>
-                    ))}
-                  </div>
+                  {renderStandings(constructorStandings, showAllConstructors, setShowAllConstructors, true)}
                 </CardContent>
               </Card>
             </div>
