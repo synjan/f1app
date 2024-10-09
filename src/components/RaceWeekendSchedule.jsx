@@ -3,43 +3,40 @@ import { formatDateTimeNordic } from '../utils/dateUtils';
 
 const RaceWeekendSchedule = ({ race }) => {
   return (
-    <div className="bg-card text-card-foreground p-4 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold mb-2">Race Weekend Schedule</h3>
-      <div className="space-y-2">
-        {race.FirstPractice && (
-          <p>
-            <span className="font-medium">First Practice:</span>{' '}
-            {formatDateTimeNordic(race.FirstPractice.date, race.FirstPractice.time)}
-          </p>
-        )}
-        {race.SecondPractice && (
-          <p>
-            <span className="font-medium">Second Practice:</span>{' '}
-            {formatDateTimeNordic(race.SecondPractice.date, race.SecondPractice.time)}
-          </p>
-        )}
-        {race.ThirdPractice && (
-          <p>
-            <span className="font-medium">Third Practice:</span>{' '}
-            {formatDateTimeNordic(race.ThirdPractice.date, race.ThirdPractice.time)}
-          </p>
-        )}
-        {race.Qualifying && (
-          <p>
-            <span className="font-medium">Qualifying:</span>{' '}
-            {formatDateTimeNordic(race.Qualifying.date, race.Qualifying.time)}
-          </p>
-        )}
-        {race.Sprint && (
-          <p>
-            <span className="font-medium">Sprint:</span>{' '}
-            {formatDateTimeNordic(race.Sprint.date, race.Sprint.time)}
-          </p>
-        )}
-        <p>
-          <span className="font-medium">Race:</span>{' '}
-          {formatDateTimeNordic(race.date, race.time)}
-        </p>
+    <div className="grid grid-cols-2 gap-4">
+      {race.FirstPractice && (
+        <div>
+          <div className="font-medium">First Practice</div>
+          <div className="text-muted-foreground">{formatDateTimeNordic(race.FirstPractice.date, race.FirstPractice.time)}</div>
+        </div>
+      )}
+      {race.SecondPractice && (
+        <div>
+          <div className="font-medium">Second Practice</div>
+          <div className="text-muted-foreground">{formatDateTimeNordic(race.SecondPractice.date, race.SecondPractice.time)}</div>
+        </div>
+      )}
+      {race.ThirdPractice && (
+        <div>
+          <div className="font-medium">Third Practice</div>
+          <div className="text-muted-foreground">{formatDateTimeNordic(race.ThirdPractice.date, race.ThirdPractice.time)}</div>
+        </div>
+      )}
+      {race.Qualifying && (
+        <div>
+          <div className="font-medium">Qualifying</div>
+          <div className="text-muted-foreground">{formatDateTimeNordic(race.Qualifying.date, race.Qualifying.time)}</div>
+        </div>
+      )}
+      {race.Sprint && (
+        <div>
+          <div className="font-medium">Sprint</div>
+          <div className="text-muted-foreground">{formatDateTimeNordic(race.Sprint.date, race.Sprint.time)}</div>
+        </div>
+      )}
+      <div>
+        <div className="font-medium">Main Race</div>
+        <div className="text-muted-foreground">{formatDateTimeNordic(race.date, race.time)}</div>
       </div>
     </div>
   );

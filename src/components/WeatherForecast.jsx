@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const WeatherForecast = ({ location }) => {
+const WeatherForecast = ({ location, raceDate, raceTime }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,9 +14,19 @@ const WeatherForecast = ({ location }) => {
       try {
         setLoading(true);
         const response = await axios.get(url);
-        // We'll take the forecast for the next 3 days
-        const forecast = response.data.list.slice(0, 8); // 8 * 3 hours = 24 hours
-        setWeather(forecast);
+        const raceDateTime = new Date(`${raceDate}T${raceTime}`);
+        const raceHour = raceDateTime.getHours();
+
+        // Find the forecast closest to the race time
+        const closestForecast = response.data.list.reduce((closest, current) => {
+          const currentDate = new Date(current.dt * 1000);
+          const currentHourDiff = Math.abs(currentDate.getHours() - raceHour);
+          const closestHourDiff = Math.abs(new Date(closest.dt * 1000).getHours() - raceHour);
+          
+          return currentHourDiff < closestHourDiff ? current : closest;
+        });
+
+        setWeather(closestForecast);
         setError(null);
       } catch (err) {
         setError('Failed to fetch weather data');
@@ -26,10 +36,10 @@ const WeatherForecast = ({ location }) => {
       }
     };
 
-    if (location) {
+    if (location && raceDate && raceTime) {
       fetchWeather();
     }
-  }, [location]);
+  }, [location, raceDate, raceTime]);
 
   if (loading) return <div>Loading weather data...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -37,20 +47,23 @@ const WeatherForecast = ({ location }) => {
 
   return (
     <div className="bg-card text-card-foreground p-4 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold mb-2">Weather Forecast</h3>
-      <div className="grid grid-cols-4 gap-2">
-        {weather.map((item, index) => (
-          <div key={index} className="text-center">
-            <p className="font-medium">{new Date(item.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-            <img 
-              src={`http://openweathermap.org/img/wn/${item.weather[0].icon}.png`} 
-              alt={item.weather[0].description}
-              className="mx-auto"
-            />
-            <p>{Math.round(item.main.temp)}°C</p>
-            <p className="text-sm text-muted-foreground">{item.weather[0].main}</p>
-          </div>
-        ))}
+      <h3 className="text-lg font-semibold mb-2">Race Time Weather Forecast</h3>
+      <div className="flex items-center justify-center space-x-4">
+        <img 
+          src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
+          alt={weather.weather[0].description}
+          className="w-16 h-16"
+        />
+        <div>
+          <p className="text-2xl font-bold">{Math.round(weather.main.temp)}°C</p>
+          <p className="text-lg capitalize">{weather.weather[0].description}</p>
+        </div>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+        <p>Humidity: {weather.main.humidity}%</p>
+        <p>Wind: {Math.round(weather.wind.speed * 3.6)} km/h</p>
+        <p>Feels like: {Math.round(weather.main.feels_like)}°C</p>
+        <p>Chance of rain: {Math.round(weather.pop * 100)}%</p>
       </div>
     </div>
   );

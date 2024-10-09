@@ -6,13 +6,20 @@ const CircuitInfo = ({ circuit }) => {
   };
 
   return (
-    <div className="bg-card text-card-foreground p-4 rounded-lg shadow-sm">
-      <h3 className="text-lg font-semibold mb-2">{circuit.circuitName}</h3>
-      <div className="space-y-2">
-        <p><span className="font-medium">Location:</span> {circuit.Location.locality}, {circuit.Location.country}</p>
+    <div className="bg-card text-card-foreground p-6 rounded-lg shadow-sm">
+      <h3 className="text-2xl font-bold mb-4">Circuit Information</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base sm:text-mobile-base">
+        <div>
+          <p className="font-medium">Circuit Name:</p>
+          <p className="text-muted-foreground">{circuit.circuitName}</p>
+        </div>
+        <div>
+          <p className="font-medium">Location:</p>
+          <p className="text-muted-foreground">{circuit.Location.locality}, {circuit.Location.country}</p>
+        </div>
         {circuit.Location.lat && circuit.Location.long && (
-          <p>
-            <span className="font-medium">Coordinates:</span>{' '}
+          <div>
+            <p className="font-medium">Coordinates:</p>
             <a 
               href={getGoogleMapsUrl(circuit.Location.lat, circuit.Location.long)} 
               target="_blank" 
@@ -21,11 +28,11 @@ const CircuitInfo = ({ circuit }) => {
             >
               {circuit.Location.lat}, {circuit.Location.long}
             </a>
-          </p>
+          </div>
         )}
         {circuit.url && (
-          <p>
-            <span className="font-medium">More info:</span>{' '}
+          <div>
+            <p className="font-medium">More Info:</p>
             <a 
               href={circuit.url} 
               target="_blank" 
@@ -34,7 +41,7 @@ const CircuitInfo = ({ circuit }) => {
             >
               Official Website
             </a>
-          </p>
+          </div>
         )}
       </div>
     </div>

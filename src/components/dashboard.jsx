@@ -17,6 +17,20 @@ const CardTitle = ({ children, ...props }) => <h3 className="text-3xl lg:text-2x
 const CardDescription = ({ children, ...props }) => <p className="text-xl lg:text-lg text-muted-foreground" {...props}>{children}</p>;
 const CardContent = ({ children, ...props }) => <div className="px-6 pb-6 lg:px-8 lg:pb-8" {...props}>{children}</div>;
 
+// Add this new component for the toggle switch
+const ToggleSwitch = ({ label, checked, onChange }) => (
+  <label className="flex items-center cursor-pointer">
+    <div className="relative">
+      <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
+      <div className="w-10 h-6 bg-gray-400 rounded-full shadow-inner"></div>
+      <div className={`absolute w-4 h-4 bg-white rounded-full shadow inset-y-1 left-1 transition-transform duration-300 ease-in-out ${checked ? 'transform translate-x-full bg-primary' : ''}`}></div>
+    </div>
+    <div className="ml-3 text-gray-700 font-medium">
+      {label}
+    </div>
+  </label>
+);
+
 export default function Dashboard() {
   const { races, driverStandings, constructorStandings, loading, error, nextRace } = useF1Data();
   const [selectedRace, setSelectedRace] = useState(null);
@@ -115,26 +129,24 @@ export default function Dashboard() {
           <section>
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 space-y-4 lg:space-y-0">
               <h2 className="text-4xl lg:text-3xl font-bold font-heading">
-                {showAllRaces ? "Full Season Schedule" : "Upcoming Races"}
+                F1 Race Schedule
               </h2>
-              <div className="flex flex-wrap items-center gap-4">
-                {showAllRaces && (
-                  <Button
-                    onClick={() => setShowPastRaces(!showPastRaces)}
-                    className="bg-secondary text-secondary-foreground transition-colors duration-200 w-full lg:w-auto"
-                  >
-                    {showPastRaces ? "Hide Past Races" : "Show Past Races"}
-                  </Button>
-                )}
-                <Button
-                  onClick={() => {
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <ToggleSwitch 
+                  label="Show All Races" 
+                  checked={showAllRaces} 
+                  onChange={() => {
                     setShowAllRaces(!showAllRaces);
                     if (!showAllRaces) setShowPastRaces(false);
                   }}
-                  className="bg-primary text-primary-foreground transition-colors duration-200 w-full lg:w-auto"
-                >
-                  {showAllRaces ? "Show Less" : "Show Full Season"}
-                </Button>
+                />
+                {showAllRaces && (
+                  <ToggleSwitch 
+                    label="Include Past Races" 
+                    checked={showPastRaces} 
+                    onChange={() => setShowPastRaces(!showPastRaces)}
+                  />
+                )}
               </div>
             </div>
             <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
